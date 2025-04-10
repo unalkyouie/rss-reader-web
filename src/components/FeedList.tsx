@@ -5,7 +5,7 @@ type Props = {
     feeds: Array<Feed>
 }
 
-const FeedList: React.FC<Props> = ({feeds}) => {
+const FeedList = ({feeds}:Props) => {
 
 if(!feeds.length) {
     return(<p>No feeds available</p>)
