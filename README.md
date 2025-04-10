@@ -1,6 +1,9 @@
 # rss-reader-web
 
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+
 This is a simple RSS Reader app built with React, designed to explore the basics of managing and displaying RSS feeds. The app includes essential features like adding feeds, viewing articles and saving feed settings locally. 
+
 
 ## Features
 
