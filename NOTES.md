@@ -3,7 +3,7 @@
 ## Plan #1
 1. **Getting the setup going**
     - Should I go with `create-react-app` or try `Vite`? I'll decide based on vibes probably. -`create-react-app`
-    - Maybe some basic routing ? Let's keep it simple for now. 
+    - Maybe some basic routing ? Let's keep it simple for now. - 
 
 2. **Core functionalities**
     - Grab RSS feeds using `rss-parser` - seems chill
@@ -29,3 +29,5 @@
 Let's try different setups and check what works. Something breaks, other thing goes perfectly - that's just how it goes, right ? Learning tons from different ideas. 
 
 I'll probably keep tweaking things along the way. It's all about seeing how small changes affect the app and keeping that flow going. 
+
+Keeping ES2020 cuz not really sure about the browsers support = need to check 
