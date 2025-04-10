@@ -1,9 +1,5 @@
 import React from "react";
-
-export type Feed = {
-    id: number, 
-    title: string
-}
+import { Feed } from "../types";
 
 type Props = {
     feeds: Array<Feed>
@@ -19,7 +15,7 @@ return (
     <div>
     {feeds.map((feed)=> (
          <div key ={feed.id}>
-            <h2>{feed.title}</h2>
+            <h2>{feed.name}</h2>
         </div>
     ))}
     </div>

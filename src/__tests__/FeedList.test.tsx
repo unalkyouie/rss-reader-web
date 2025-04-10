@@ -1,11 +1,7 @@
 
 import {render, screen} from '@testing-library/react';
-import FeedList, { Feed } from '../components/FeedList';
-
-const mockFeeds: Feed[]=[
-    {id:1, title: 'Example Title 1'},
-    {id:2, title: 'Example Title 2'}
-]
+import FeedList from '../components/FeedList';
+import { mockFeeds } from './__mocks__';
 
 describe('FeedList', ()=>{
     it('renders a list of feeds',() => {
