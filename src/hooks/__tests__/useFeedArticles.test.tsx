@@ -1,4 +1,5 @@
-import {renderHook, act} from '@testing-library/react-hooks'
+import {renderHook} from '@testing-library/react-hooks'
+import useFeedArticles from '../useFeedArticles';
 
 jest.mock('rss-parser', ()=>({
     RSSParser: jest.fn().mockImplementation(()=>({
@@ -51,5 +52,5 @@ describe('useFeedArticles', ()=>{
     
         expect(result.current.error).toBe('Failed to fetch articles');
         expect(result.current.loading).toBe(false);
-    })
-})
+    });
+});
