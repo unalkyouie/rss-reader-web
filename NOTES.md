@@ -36,7 +36,7 @@ Keeping ES2020 cuz not really sure about the browsers support
 
 Goal: 
 Foundation for managing RSS feeds: 
-- [ ] A component to list current feeds
+- [x] A component to list current feeds
 - [ ] Adding new feed - (URL validation?)
 - [ ] Editing existing feed 
 - [ ] Local persistence via localStorage
@@ -45,3 +45,4 @@ Foundation for managing RSS feeds:
 Vibe check: Starting small and smart (trying) - 1. tests 2. code 
 Baby steps with standards 
 
+I got too much frustrated rn in fact, maybe it's the end of the week vibe or idk 
