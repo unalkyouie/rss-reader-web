@@ -10,6 +10,6 @@ export type Article = {
     title: string, 
     link: string
     pubDate: string
-    feedTitle: string;
+    feedTitle?: string;
 }
 export type ArticlesList = Array<Article>
