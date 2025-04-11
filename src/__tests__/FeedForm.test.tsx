@@ -9,7 +9,7 @@ describe('FeedForm', ()=>{
 
         const nameInput = screen.getByPlaceholderText(/feed name/i);
         const urlInput = screen.getByPlaceholderText(/feed url/i);
-        const button = screen.getByPlaceholderText(/add feed/i);
+        const button = screen.getByText(/add feed/i);
 
         fireEvent.change(nameInput, {target:{ value: 'Changed Feed'}});
         fireEvent.change(urlInput, {target:{ value: 'url'}});

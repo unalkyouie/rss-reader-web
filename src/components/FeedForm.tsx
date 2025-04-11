@@ -33,7 +33,7 @@ const FeedForm = ({onAddFeed}:Props) => {
                 onChange={(e)=>setUrl(e.target.value)}
                 required
                 />
-                <button type='submit'>Add feed</button>
+            <button type='submit'>Add feed</button>
         </form>
 
     )

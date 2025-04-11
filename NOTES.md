@@ -30,4 +30,18 @@ Let's try different setups and check what works. Something breaks, other thing g
 
 I'll probably keep tweaking things along the way. It's all about seeing how small changes affect the app and keeping that flow going. 
 
-Keeping ES2020 cuz not really sure about the browsers support = need to check 
+Keeping ES2020 cuz not really sure about the browsers support
+
+## Branch: feat/feed-manager 
+
+Goal: 
+Foundation for managing RSS feeds: 
+- [ ] A component to list current feeds
+- [ ] Adding new feed - (URL validation?)
+- [ ] Editing existing feed 
+- [ ] Local persistence via localStorage
+- [ ] Tests for each step 
+
+Vibe check: Starting small and smart (trying) - 1. tests 2. code 
+Baby steps with standards 
+
