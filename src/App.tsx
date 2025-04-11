@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import FeedList,{ Feed } from './components/FeedList';
-
-
+import FeedList from './components/FeedList';
+import { mockFeeds } from './__tests__/__mocks__';
+import { Feed } from './types';
+import FeedForm from './components/FeedForm';
 
 
 const App: React.FC = ()=> {
@@ -9,13 +10,14 @@ const App: React.FC = ()=> {
 const [feeds, setFeeds] = useState<Array<Feed>>([]);
 
 useEffect(()=>{
-  setFeeds([{id:1, title: 'Example Feed 1'}, {id:2, title: 'Example Feed 2'}])
+  setFeeds(mockFeeds)
 },[])
 
   return (
    <div>
     <h1>RSS Reader</h1>
     <FeedList feeds={feeds}/>
+    <FeedForm onAddFeed={(feed)=>{console.log(feed)}} />
    </div>
   );
 }

@@ -1,20 +1,21 @@
 import React from "react";
+import { Feed } from "../types";
 
-export interface Feed {
-    id: number, 
-    title: string
-}
-
-interface Props {
+type Props = {
     feeds: Array<Feed>
 }
 
-const FeedList: React.FC<Props> = ({feeds}) => {
+const FeedList = ({feeds}:Props) => {
+
+if(!feeds.length) {
+    return(<p>No feeds available</p>)
+}
+
 return (
     <div>
     {feeds.map((feed)=> (
          <div key ={feed.id}>
-            <h2>{feed.title}</h2>
+            <h2>{feed.name}</h2>
         </div>
     ))}
     </div>
