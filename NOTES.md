@@ -46,3 +46,16 @@ Vibe check: Starting small and smart (trying) - 1. tests 2. code
 Baby steps with standards 
 
 I got too much frustrated rn in fact, maybe it's the end of the week vibe or idk 
+
+Starting to feel good about this. 
+-> Got the feeds - time to show some content. 
+ArticlesList will take a list of articles (mocked now) - should: display title, feed name and publication date
+Articles sorted by date (new first)
+
+Fun fact: feeds mean nothing without articles xD
+
+-> Lets connect these little babies
+- [x] Install `rss-parser`
+- [ ] Wrap the fetching logic into reusable hook 
+- [ ] Feed it
+
