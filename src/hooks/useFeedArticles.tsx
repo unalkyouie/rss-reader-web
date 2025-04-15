@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ArticlesList } from "../types";
+import { ArticlesList } from "../types/global";
 import RSSParser from "rss-parser";
 
 // Improved feed articles hook with better error handling

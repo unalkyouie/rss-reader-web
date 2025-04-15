@@ -1,4 +1,4 @@
-import { ArticlesList, FeedList } from "../../types"
+import { ArticlesList, FeedList } from "../../types/types"
 
 export const mockFeeds: FeedList =[
     {id:1, name: 'Example Title 1', url: 'url1'},

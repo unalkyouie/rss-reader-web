@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import FeedList from './components/FeedList';
-import { mockFeeds } from './__tests__/__mocks__';
-import { Feed } from './types';
-import FeedForm from './components/FeedForm';
-import ArticlesList from './components/ArticlesList';
+import FeedList from './components/features/feeds/FeedList';
+import { mockFeeds } from '../__mocks__'
+import { Feed } from './types/global';
+import FeedForm from './components/features/feeds/FeedForm';
+import ArticlesList from './components/features/articles/ArticlesList';
 
 
 const App: React.FC = ()=> {

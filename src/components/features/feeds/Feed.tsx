@@ -1,5 +1,5 @@
 import React from 'react';
-import ArticlesList from './ArticlesList';
+import ArticlesList from './features/articles/ArticlesList';
 import useFeedArticles from '../hooks/useFeedArticles';
 
 interface FeedProps {

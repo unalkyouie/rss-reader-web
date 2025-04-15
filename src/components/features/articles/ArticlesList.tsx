@@ -1,6 +1,6 @@
 import React from 'react';
 
-import useFeedArticles from '../hooks/useFeedArticles';
+import useFeedArticles from '../../../hooks/useFeedArticles';
 
 type Props = {
   url: string;
