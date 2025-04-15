@@ -1,56 +1,74 @@
-import {renderHook} from '@testing-library/react-hooks'
+import { renderHook } from '@testing-library/react';
 import useFeedArticles from '../useFeedArticles';
 
-jest.mock('rss-parser', ()=>({
-    RSSParser: jest.fn().mockImplementation(()=>({
-        parseURL: jest.fn().mockResolvedValue({
-            items: [
-                {title: 'Article 1', link: 'http://example.com/1', pubDate: '2025-04-11'},
-                {title: 'Article 2', link: 'http://example.com/2', pubDate: '2025-04-10'}
-            ],
-            title: 'Example Title'
-        })
-    }))
-}));
+const mockFeed = {
+    items: [
+        {title: 'Article 1', link: 'http://example.com/1', pubDate: '2025-04-11'},
+        {title: 'Article 2', link: 'http://example.com/2', pubDate: '2025-04-10'}
+    ],
+    title: 'Example Feed'
+};
 
-describe('useFeedArticles', ()=>{
-    it('should return articles when data is fetched', async() =>{
+const mockParseURL = jest.fn();
+jest.mock('rss-parser', () => {
+    return {
+        default: jest.fn().mockImplementation(() => ({
+            parseURL: mockParseURL
+        }))
+    };
+});
 
-        const {result, waitForNextUpdate} = renderHook(()=>useFeedArticles('url'));
+describe('useFeedArticles', () => {
+    beforeEach(() => {
+        mockParseURL.mockClear();
+    });
 
-        await waitForNextUpdate();
+    it('should return articles when data is fetched', async () => {
+        mockParseURL.mockResolvedValueOnce(mockFeed);
+        
+        const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
+        
+        // Initial state
+        expect(result.current.loading).toBe(true);
+        expect(result.current.articles).toEqual([]);
+        
+        // Wait for next tick to allow state updates
+        await Promise.resolve();
+        rerender();
 
         expect(result.current.articles).toEqual([
             {
-                title: 'First Article',
-                link: 'https://example.com/1',
-                pubDate: '2025-04-10T12:00:00Z',
-                feedTitle: 'Example Title 1'
+                title: 'Article 1',
+                link: 'http://example.com/1',
+                pubDate: '2025-04-11',
+                feedTitle: 'Example Feed'
             },
             {
-                title: 'Second Article',
-                link: 'https://example.com/2',
-                pubDate: '2025-04-11T12:00:00Z',
-                feedTitle: 'Example Title 2'
+                title: 'Article 2',
+                link: 'http://example.com/2',
+                pubDate: '2025-04-10',
+                feedTitle: 'Example Feed'
             }
         ]);
         expect(result.current.loading).toBe(false);
         expect(result.current.error).toBeNull();
     });
-    it('should return error when data fails to load', async() =>{
 
-        jest.mock('rss-parser', ()=>({
-            RSSParser: jest.fn().mockImplementation(()=>({
-                parseURL: jest.fn().mockRejectedValue(new Error ('Network Error'));
-            }))
-        }));
+    it('should return error when data fails to load', async () => {
+        mockParseURL.mockRejectedValueOnce(new Error('Network Error'));
+        
+        const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
+        
+        // Initial state
+        expect(result.current.loading).toBe(true);
+        expect(result.current.articles).toEqual([]);
+        
+        // Wait for next tick to allow state updates
+        await Promise.resolve();
+        rerender();
 
-        const {result, waitForNextUpdate} = renderHook(()=>useFeedArticles('url'));
-
-        await waitForNextUpdate();
-
-    
-        expect(result.current.error).toBe('Failed to fetch articles');
+        expect(result.current.error).toBe('Failed to load articles');
         expect(result.current.loading).toBe(false);
+        expect(result.current.articles).toEqual([]);
     });
 });
