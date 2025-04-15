@@ -10,16 +10,16 @@
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "strict": true, // Trzyma się zasady "strict" włączającej inne flagi
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true, // TypeScript nie generuje plików
-    "jsx": "react-jsx"
+    "noEmit": true, 
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom", "jest", "@testing-library/jest-dom"]
   },
   "include": [
     "src"
-  ], 
-  "types": ["jest", "@testing-library/jest-dom"],
+  ]
 }

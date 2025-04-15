@@ -1,29 +1,32 @@
-import { render } from '@testing-library/react';
+import { render, act } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
-import userEvent from '@testing-library/user-event'; // Import userEvent
+import userEvent from '@testing-library/user-event';
 import FeedForm from '../components/FeedForm';
 
 describe('FeedForm', () => {
   it('calls onAddFeed with name and URL when form is submitted', async () => {
+    const user = userEvent.setup();
+
     const onAddFeed = jest.fn();
+
     render(<FeedForm onAddFeed={onAddFeed} />);
 
     const nameInput = screen.getByPlaceholderText(/feed name/i);
     const urlInput = screen.getByPlaceholderText(/feed url/i);
     const button = screen.getByText(/add feed/i);
 
-    // Simulating user inputs
-    await userEvent.type(nameInput, 'Changed Feed'); // Use userEvent.type for input
-    await userEvent.type(urlInput, 'url'); // Use userEvent.type for input
+    await act(async () => {
+      await user.type(nameInput, 'Changed Feed');
 
-    // Clicking the submit button
-    await userEvent.click(button); // Use userEvent.click
+      await user.type(urlInput, 'url');
 
-    // Check if onAddFeed was called with the correct values
+      await user.click(button);
+    });
+
     expect(onAddFeed).toHaveBeenCalledWith({
       name: 'Changed Feed',
       url: 'url',
     });
-    expect(onAddFeed).toHaveBeenCalledTimes(1); // Ensure it's called only once
+    expect(onAddFeed).toHaveBeenCalledTimes(1);
   });
 });
