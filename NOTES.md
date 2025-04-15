@@ -56,6 +56,6 @@ Fun fact: feeds mean nothing without articles xD
 
 -> Lets connect these little babies
 - [x] Install `rss-parser`
-- [ ] Wrap the fetching logic into reusable hook 
+- [x] Wrap the fetching logic into reusable hook 
 - [ ] Feed it
 
