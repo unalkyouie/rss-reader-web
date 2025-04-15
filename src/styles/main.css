@@ -1,0 +1,154 @@
+/* General Styles */
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: #333;
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 20px;
+}
+
+h1,
+h2,
+h3 {
+  color: #2c3e50;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* Form Styles */
+.feed-form {
+  margin-bottom: 30px;
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+input[type='text'],
+input[type='url'] {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  font-size: 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+button:hover {
+  background-color: #2980b9;
+}
+
+button:disabled {
+  background-color: #bdc3c7;
+  cursor: not-allowed;
+}
+
+/* SearchBar Styles */
+.search-bar {
+  margin-bottom: 20px;
+  display: flex;
+  gap: 10px;
+}
+
+.search-bar input[type='text'] {
+  flex-grow: 1;
+}
+
+.search-button {
+  background-color: #2ecc71;
+}
+
+.search-button:hover {
+  background-color: #27ae60;
+}
+
+/* Articles List Styles */
+.articles-container {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.articles-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+.article-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  transition: background-color 0.2s;
+}
+
+.article-item:hover {
+  background-color: #f5f5f5;
+}
+
+.article-link {
+  display: block;
+  color: #3498db;
+  font-weight: 500;
+  text-decoration: none;
+  margin-bottom: 5px;
+  font-size: 18px;
+}
+
+.article-link:hover {
+  text-decoration: underline;
+}
+
+.article-meta {
+  color: #7f8c8d;
+}
+
+/* Error and Loading States */
+.error {
+  color: #e74c3c;
+  padding: 10px;
+  background-color: #fadbd8;
+  border-radius: 4px;
+  margin-bottom: 20px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    padding: 10px;
+  }
+
+  .search-bar {
+    flex-direction: column;
+  }
+
+  .article-link {
+    font-size: 16px;
+  }
+}
