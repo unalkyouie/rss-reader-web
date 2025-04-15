@@ -1,20 +1,16 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths":{
-      "~/components/*":["src/components/*"],
-      "~/features/*":["src/components/features/*","src/features/*"],
-      "~/hooks/*":["src/hooks/*"],
-      "~/utils/*":["src/utils/*"],
-      "~/mocks/*":["./__mocks__/*"],
-      "~/*": ["src/*"]
+    "baseUrl": "src",
+    "paths": {
+      "~/*": ["*"],
+      "~/components/*": ["components/*"],
+      "~/features/*": ["components/features/*"],
+      "~/hooks/*": ["hooks/*"],
+      "~/utils/*": ["utils/*"],
+      "~/mocks/*": ["../__mocks__/*"]
     },
     "target": "ES2020",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es2020"
-    ],
+    "lib": ["dom", "dom.iterable", "es2020"],
     "allowJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
@@ -24,11 +20,9 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true, 
+    "noEmit": true,
     "jsx": "react-jsx",
-    "types": ["react", "react-dom", "jest", "@testing-library/jest-dom"]
+    "types": ["vite/client", "jest", "@testing-library/jest-dom"]
   },
-  "include": [
-    "src"
-, "__mocks__"  ]
+  "include": ["src", "__mocks__"]
 }

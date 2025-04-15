@@ -20,20 +20,20 @@ const FeedForm = ({ onAddFeed }: Props) => {
   return (
     <form onSubmit={handleSubmit}>
       <input
-        type='text'
-        placeholder='Feed Name'
+        type="text"
+        placeholder="Feed Name"
         value={name}
-        onChange={(e) => setName(e.target.value)} 
+        onChange={(e) => setName(e.target.value)}
         required
       />
       <input
-        type='url'
-        placeholder='Feed URL'
+        type="url"
+        placeholder="Feed URL"
         value={url}
-        onChange={(e) => setUrl(e.target.value)} 
+        onChange={(e) => setUrl(e.target.value)}
         required
       />
-      <button type='submit'>Add Feed</button>
+      <button type="submit">Add Feed</button>
     </form>
   );
 };
