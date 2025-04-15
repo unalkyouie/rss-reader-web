@@ -28,11 +28,9 @@ describe('useFeedArticles', () => {
         
         const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
         
-        // Initial state
         expect(result.current.loading).toBe(true);
         expect(result.current.articles).toEqual([]);
         
-        // Wait for next tick to allow state updates
         await Promise.resolve();
         rerender();
 
@@ -59,11 +57,9 @@ describe('useFeedArticles', () => {
         
         const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
         
-        // Initial state
         expect(result.current.loading).toBe(true);
         expect(result.current.articles).toEqual([]);
         
-        // Wait for next tick to allow state updates
         await Promise.resolve();
         rerender();
 
