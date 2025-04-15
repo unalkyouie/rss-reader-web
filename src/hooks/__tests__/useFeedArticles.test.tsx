@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react';
+import { renderHook, act } from '@testing-library/react';
 import useFeedArticles from '../useFeedArticles';
 
 const mockFeed = {
@@ -10,12 +10,12 @@ const mockFeed = {
 };
 
 const mockParseURL = jest.fn();
+
+// Mock rss-parser
 jest.mock('rss-parser', () => {
-    return {
-        default: jest.fn().mockImplementation(() => ({
-            parseURL: mockParseURL
-        }))
-    };
+    return jest.fn().mockImplementation(() => ({
+        parseURL: mockParseURL
+    }));
 });
 
 describe('useFeedArticles', () => {
@@ -28,12 +28,17 @@ describe('useFeedArticles', () => {
         
         const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
         
+        // Initial state check
         expect(result.current.loading).toBe(true);
         expect(result.current.articles).toEqual([]);
         
-        await Promise.resolve();
+        // Wait for state updates
+        await act(async () => {
+            await Promise.resolve();
+        });
         rerender();
 
+        // Final state check
         expect(result.current.articles).toEqual([
             {
                 title: 'Article 1',
@@ -57,13 +62,18 @@ describe('useFeedArticles', () => {
         
         const { result, rerender } = renderHook(() => useFeedArticles('http://example.com/feed'));
         
+        // Initial state check
         expect(result.current.loading).toBe(true);
         expect(result.current.articles).toEqual([]);
         
-        await Promise.resolve();
+        // Wait for state updates
+        await act(async () => {
+            await Promise.resolve();
+        });
         rerender();
 
-        expect(result.current.error).toBe('Failed to load articles');
+        // Final state check
+        expect(result.current.error).toBe('Failed to load articles: Network Error');
         expect(result.current.loading).toBe(false);
         expect(result.current.articles).toEqual([]);
     });

@@ -5,10 +5,21 @@
 import '@testing-library/jest-dom';
 import { configure } from '@testing-library/react';
 
+// Configure Testing Library
 configure({
   asyncUtilTimeout: 1000,
 });
 
+// Redirect to React.act from react-dom/test-utils.act
+jest.mock('react-dom/test-utils', () => {
+  const original = jest.requireActual('react-dom/test-utils');
+  return {
+    ...original,
+    act: jest.requireActual('react').act,
+  };
+});
+
+// Suppress unwanted warnings
 const originalError = console.error;
 beforeAll(() => {
   console.error = (...args) => {
