@@ -16,10 +16,10 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true, // TypeScript nie generuje plików
-    "jsx": "react-jsx"
+    "jsx": "react-jsx",
+    "types": ["react", "react-dom", "jest", "@testing-library/jest-dom"]
   },
   "include": [
     "src"
-  ], 
-  "types": ["jest", "@testing-library/jest-dom"],
+  ]
 }
