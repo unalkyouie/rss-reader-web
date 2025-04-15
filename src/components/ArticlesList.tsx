@@ -1,21 +1,27 @@
 import React from "react";
-import { ArticlesList as ListType } from "../types";
+import useFeedArticles from "../hooks/useFeedArticles";
 
-type Props ={
-    articles: ListType;
+type Props = {
+    url: string;
 }
 
-const ArticlesList = ({articles}:Props)=>{
-    const sortedArticles=[...articles].sort(
-        (a,b)=> new Date(b.pubDate).getTime()-new Date(a.pubDate).getTime()
+const ArticlesList = ({url}: Props) => {
+    const {articles, error, loading} = useFeedArticles(url);
+
+    const sortedArticles = [...articles].sort(
+        (a,b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime()
     );
 
-    return(
+    if (loading) return <div>Loading...</div>;
+    if (error) return <div>Error loading articles: {error}</div>;
+    if (!articles.length) return <div>No articles found</div>;
+
+    return (
         <div>
             <h2>Articles</h2>
             <ul>
-                {sortedArticles.map((article, index)=>(
-                    <li key={index}>
+                {sortedArticles.map((article, index) => (
+                    <li key={`${article.link}-${index}`}>
                         <a href={article.link} target="_blank" rel="noopener noreferrer">
                             {article.title}
                         </a>
