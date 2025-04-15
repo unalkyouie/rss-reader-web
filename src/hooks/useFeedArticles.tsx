@@ -1,36 +1,61 @@
 import { useEffect, useState } from "react";
 import { ArticlesList } from "../types";
-import RSSParser from 'rss-parser';
+import RSSParser from "rss-parser";
 
-const useFeedArticles =(url:string) =>{
-    const [articles, setArticles]=useState<ArticlesList>([]);
+// Improved feed articles hook with better error handling
+const useFeedArticles = (url: string) => {
+    const [articles, setArticles] = useState<ArticlesList>([]);
     const [loading, setIsLoading] = useState<boolean>(true);
     const [error, setError] = useState<string|null>(null);
 
-    useEffect(()=>{
-        const fetchArticles = async ()=>{
+    useEffect(() => {
+        console.log(`Fetching articles from: ${url}`);
+        let isMounted = true;
+        const parser = new RSSParser();
+
+        const fetchArticles = async () => {
             try {
-                const parser = new RSSParser();
+                console.log("Starting RSS fetch...");
                 const feed = await parser.parseURL(url);
-                const parsedArticles = feed.items.map((item:any)=>({
-                    title: item.title,
-                    link: item.link, 
-                    pubDate: item.pubDate,
-                    feedTitle: feed.title,
-                }));
-                setArticles(parsedArticles);
-                setIsLoading(false)
-            }catch (error:any){
-                setError('Failed to load articles');
-                setIsLoading(false);
+                console.log("Feed fetched successfully:", feed.title);
+                
+                if (!isMounted) return;
+                
+                if (feed.items && Array.isArray(feed.items)) {
+                    const parsedArticles = feed.items.map((item: any) => ({
+                        title: item.title || "Untitled",
+                        link: item.link || "",
+                        pubDate: item.pubDate || new Date().toISOString(),
+                        feedTitle: feed.title || "Unknown Feed",
+                    }));
+                    
+                    console.log(`Parsed ${parsedArticles.length} articles`);
+                    setArticles(parsedArticles);
+                } else {
+                    console.warn("Feed items missing or not an array");
+                    setArticles([]);
+                }
+            } catch (error: any) {
+                console.error("Error fetching feed:", error);
+                if (isMounted) {
+                    setError(`Failed to load articles: ${error.message || 'Unknown error'}`);
+                }
+            } finally {
+                if (isMounted) {
+                    setIsLoading(false);
+                    console.log("Feed loading completed");
+                }
             }
         };
 
         fetchArticles();
+
+        return () => {
+            isMounted = false;
+        };
     }, [url]);
 
-
-    return {error, loading, articles}
-}
+    return { error, loading, articles };
+};
 
 export default useFeedArticles;
