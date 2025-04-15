@@ -10,13 +10,30 @@ module.exports = {
   },
   resolve: {
     extensions: ['.tsx', '.ts', '.js', '.jsx'],
+    alias: {
+      '~': path.resolve(__dirname, 'src'),
+      '~/components': path.resolve(__dirname, 'src/components'),
+      '~/features': path.resolve(__dirname, 'src/components/features'),
+      '~/hooks': path.resolve(__dirname, 'src/hooks'),
+      '~/utils': path.resolve(__dirname, 'src/utils'),
+      '~/mocks': path.resolve(__dirname, '__mocks__'),
+    },
   },
   module: {
     rules: [
       {
         test: /\.(ts|tsx)$/,
         exclude: /node_modules/,
-        use: 'ts-loader',
+        use: {
+          loader: 'ts-loader',
+          options: {
+            transpileOnly: true,
+            compilerOptions: {
+              noEmit: false,
+              jsx: 'react-jsx',
+            },
+          },
+        },
       },
       {
         test: /\.css$/,
@@ -38,4 +55,4 @@ module.exports = {
     open: true,
     historyApiFallback: true,
   },
-}; 
+};

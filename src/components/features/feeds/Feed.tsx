@@ -1,6 +1,7 @@
 import React from 'react';
-import ArticlesList from './features/articles/ArticlesList';
-import useFeedArticles from '../hooks/useFeedArticles';
+
+import ArticlesList from '~/features/articles/ArticlesList';
+import useFeedArticles from '~/hooks/useFeedArticles';
 
 interface FeedProps {
   feedUrl: string;

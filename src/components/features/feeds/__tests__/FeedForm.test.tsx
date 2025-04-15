@@ -1,7 +1,8 @@
 import { render, act } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
-import FeedForm from '../components/features/feeds/FeedForm';
+
+import FeedForm from '~/features/feeds/FeedForm';
 
 describe('FeedForm', () => {
   it('calls onAddFeed with name and URL when form is submitted', async () => {

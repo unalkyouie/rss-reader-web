@@ -1,6 +1,7 @@
 import { renderHook } from '@testing-library/react';
 import { waitFor } from '@testing-library/react';
-import useFeedArticles from '../useFeedArticles';
+
+import useFeedArticles from '~/hooks/useFeedArticles';
 
 const mockFeed = {
   items: [

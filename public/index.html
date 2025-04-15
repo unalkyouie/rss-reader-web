@@ -31,12 +31,10 @@
     <div id="initial-loading">Loading App... If this message doesn't disappear, there might be a JavaScript error.</div>
     <div id="root"></div>
     <script>
-      // Hide loading indicator when React renders
       window.addEventListener('DOMContentLoaded', function() {
         console.log('DOMContentLoaded fired');
       });
-      
-      // Hide loading message when React mounts
+
       setTimeout(function() {
         var loadingEl = document.getElementById('initial-loading');
         if (loadingEl && document.getElementById('root').children.length > 0) {

@@ -59,3 +59,12 @@ Fun fact: feeds mean nothing without articles xD
 - [x] Wrap the fetching logic into reusable hook 
 - [ ] Feed it
 
+** Polishing **
+
+[x] change folder structure to be more feature oriented with some global components
+[x] move tests per feature
+[x] move mocks globally
+[x] global paths in tsconfig
+[ ] add utils for parsing RSS 
+[ ] add formatting date
+[ ] add glovbal reusable components (Button, Input ...)
