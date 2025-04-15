@@ -34,9 +34,6 @@ coverage/
 #Log files
 *.log
 
-# Husky 
-.husky/
-
 # npm package-lock files 
 package-lock.json
 
