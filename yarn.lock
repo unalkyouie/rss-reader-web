@@ -598,13 +598,13 @@ __metadata:
   linkType: hard
 
 "@eslint-community/eslint-utils@npm:^4.2.0, @eslint-community/eslint-utils@npm:^4.4.0":
-  version: 4.6.0
-  resolution: "@eslint-community/eslint-utils@npm:4.6.0"
+  version: 4.6.1
+  resolution: "@eslint-community/eslint-utils@npm:4.6.1"
   dependencies:
     eslint-visitor-keys: "npm:^3.4.3"
   peerDependencies:
     eslint: ^6.0.0 || ^7.0.0 || >=8.0.0
-  checksum: 10c0/a64131c1b43021e3a84267f6011fd678a936718097c9be169c37a40ada2c7016bec7d6685ecc88112737d57733f36837bb90d9425ad48d2e2aa351d999d32443
+  checksum: 10c0/cdeb6f8fc33a83726357d7f736075cdbd6e79dc7ac4b00b15680f1111d0f33bda583e7fafa5937245a058cc66302dc47568bba57b251302dc74964d8e87f56d7
   languageName: node
   linkType: hard
 
@@ -1179,6 +1179,16 @@ __metadata:
   version: 4.40.0
   resolution: "@rollup/rollup-win32-x64-msvc@npm:4.40.0"
   conditions: os=win32 & cpu=x64
+  languageName: node
+  linkType: hard
+
+"@rowanmanning/feed-parser@npm:2.0.2":
+  version: 2.0.2
+  resolution: "@rowanmanning/feed-parser@npm:2.0.2"
+  dependencies:
+    fast-xml-parser: "npm:^5.0.8"
+    html-entities: "npm:^2.3.3"
+  checksum: 10c0/a057ef7e1e1b93e2a26a3d1370d9fb6141fa5d7520b80e69888b7eef6ed3fd2ddfc60009028df36b978f64bd54a58baf816bc2b481ca533684735798fe8c06a5
   languageName: node
   linkType: hard
 
@@ -2155,9 +2165,9 @@ __metadata:
   linkType: hard
 
 "caniuse-lite@npm:^1.0.30001688":
-  version: 1.0.30001713
-  resolution: "caniuse-lite@npm:1.0.30001713"
-  checksum: 10c0/f5468abfe73ce30e29cc8bde2ea67df2aab69032bdd93345e0640efefb76b7901c84fe1d28d591a797e65fe52fc24cae97060bb5552f9f9740322aff95ce2f9d
+  version: 1.0.30001714
+  resolution: "caniuse-lite@npm:1.0.30001714"
+  checksum: 10c0/b0e3372f018c5c177912f0282af98049057d83c80846293a4e3df728644a622db42a9e8971d6b7708d76e0fd4e9f6d5ce93802cf4e6818de80fdf371dc0f6a06
   languageName: node
   linkType: hard
 
@@ -2656,13 +2666,6 @@ __metadata:
   dependencies:
     iconv-lite: "npm:^0.6.2"
   checksum: 10c0/36d938712ff00fe1f4bac88b43bcffb5930c1efa57bbcdca9d67e1d9d6c57cfb1200fb01efe0f3109b2ce99b231f90779532814a81370a1bd3274a0f58585039
-  languageName: node
-  linkType: hard
-
-"entities@npm:^2.0.3":
-  version: 2.2.0
-  resolution: "entities@npm:2.2.0"
-  checksum: 10c0/7fba6af1f116300d2ba1c5673fc218af1961b20908638391b4e1e6d5850314ee2ac3ec22d741b3a8060479911c99305164aed19b6254bde75e7e6b1b2c3f3aa3
   languageName: node
   linkType: hard
 
@@ -3291,6 +3294,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fast-xml-parser@npm:^5.0.8":
+  version: 5.2.0
+  resolution: "fast-xml-parser@npm:5.2.0"
+  dependencies:
+    strnum: "npm:^2.0.5"
+  bin:
+    fxparser: src/cli/cli.js
+  checksum: 10c0/9d65ea8edeff114200313a7df7b9b1c62ff848099529ab82ed2de75ef789ebf1d7105442a12a1a51899f4dae3961f776adc6ddd85dd461272bc3f1e62211fc37
+  languageName: node
+  linkType: hard
+
 "fastq@npm:^1.6.0":
   version: 1.19.1
   resolution: "fastq@npm:1.19.1"
@@ -3749,6 +3763,13 @@ __metadata:
   dependencies:
     whatwg-encoding: "npm:^2.0.0"
   checksum: 10c0/b17b3b0fb5d061d8eb15121c3b0b536376c3e295ecaf09ba48dd69c6b6c957839db124fe1e2b3f11329753a4ee01aa7dedf63b7677999e86da17fbbdd82c5386
+  languageName: node
+  linkType: hard
+
+"html-entities@npm:^2.3.3":
+  version: 2.6.0
+  resolution: "html-entities@npm:2.6.0"
+  checksum: 10c0/7c8b15d9ea0cd00dc9279f61bab002ba6ca8a7a0f3c36ed2db3530a67a9621c017830d1d2c1c65beb9b8e3436ea663e9cf8b230472e0e413359399413b27c8b7
   languageName: node
   linkType: hard
 
@@ -4493,7 +4514,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"jest-environment-jsdom@npm:^29.7.0":
+"jest-environment-jsdom@npm:29.7.0":
   version: 29.7.0
   resolution: "jest-environment-jsdom@npm:29.7.0"
   dependencies:
@@ -6288,20 +6309,11 @@ __metadata:
   languageName: node
   linkType: hard
 
-"rss-parser@npm:3.13.0":
-  version: 3.13.0
-  resolution: "rss-parser@npm:3.13.0"
-  dependencies:
-    entities: "npm:^2.0.3"
-    xml2js: "npm:^0.5.0"
-  checksum: 10c0/d3912c9971b81630aedb39bf57d44767d6e35e1e040fbb3602725eb8d1b17867f7f7db6c3377722c3daeff90c02ee2b3a14725fee723e2375611a56d75ea2159
-  languageName: node
-  linkType: hard
-
 "rss-reader-web@workspace:.":
   version: 0.0.0-use.local
   resolution: "rss-reader-web@workspace:."
   dependencies:
+    "@rowanmanning/feed-parser": "npm:2.0.2"
     "@testing-library/jest-dom": "npm:6.6.3"
     "@testing-library/react": "npm:14.2.1"
     "@testing-library/react-hooks": "npm:8.0.1"
@@ -6320,16 +6332,15 @@ __metadata:
     eslint-plugin-unused-imports: "npm:4.1.4"
     husky: "npm:9.1.7"
     jest: "npm:29.7.0"
-    jest-environment-jsdom: "npm:^29.7.0"
+    jest-environment-jsdom: "npm:29.7.0"
     lint-staged: "npm:15.5.0"
     prettier: "npm:3.5.3"
     react: "npm:19.1.0"
     react-dom: "npm:19.1.0"
     rimraf: "npm:6.0.1"
-    rss-parser: "npm:3.13.0"
-    ts-jest: "npm:^29.3.2"
+    ts-jest: "npm:29.3.2"
     typescript: "npm:4.9.5"
-    vite: "npm:^6.2.6"
+    vite: "npm:6.2.6"
   languageName: unknown
   linkType: soft
 
@@ -6380,13 +6391,6 @@ __metadata:
   version: 2.1.2
   resolution: "safer-buffer@npm:2.1.2"
   checksum: 10c0/7e3c8b2e88a1841c9671094bbaeebd94448111dd90a81a1f606f3f67708a6ec57763b3b47f06da09fc6054193e0e6709e77325415dc8422b04497a8070fa02d4
-  languageName: node
-  linkType: hard
-
-"sax@npm:>=0.6.0":
-  version: 1.4.1
-  resolution: "sax@npm:1.4.1"
-  checksum: 10c0/6bf86318a254c5d898ede6bd3ded15daf68ae08a5495a2739564eb265cd13bcc64a07ab466fb204f67ce472bb534eb8612dac587435515169593f4fffa11de7c
   languageName: node
   linkType: hard
 
@@ -6841,6 +6845,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"strnum@npm:^2.0.5":
+  version: 2.0.5
+  resolution: "strnum@npm:2.0.5"
+  checksum: 10c0/856026ef65eaf15359d340a313ece25822b6472377b3029201b00f2657a1a3fa1cd7a7ce349dad35afdd00faf451344153dbb3d8478f082b7af8c17a64799ea6
+  languageName: node
+  linkType: hard
+
 "supports-color@npm:^7.1.0":
   version: 7.2.0
   resolution: "supports-color@npm:7.2.0"
@@ -6971,7 +6982,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ts-jest@npm:^29.3.2":
+"ts-jest@npm:29.3.2":
   version: 29.3.2
   resolution: "ts-jest@npm:29.3.2"
   dependencies:
@@ -7214,7 +7225,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"vite@npm:^6.2.6":
+"vite@npm:6.2.6":
   version: 6.2.6
   resolution: "vite@npm:6.2.6"
   dependencies:
@@ -7476,23 +7487,6 @@ __metadata:
   version: 4.0.0
   resolution: "xml-name-validator@npm:4.0.0"
   checksum: 10c0/c1bfa219d64e56fee265b2bd31b2fcecefc063ee802da1e73bad1f21d7afd89b943c9e2c97af2942f60b1ad46f915a4c81e00039c7d398b53cf410e29d3c30bd
-  languageName: node
-  linkType: hard
-
-"xml2js@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "xml2js@npm:0.5.0"
-  dependencies:
-    sax: "npm:>=0.6.0"
-    xmlbuilder: "npm:~11.0.0"
-  checksum: 10c0/c9cd07cd19c5e41c740913bbbf16999a37a204488e11f86eddc2999707d43967197e257014d7ed72c8fc4348c192fa47eb352d1d9d05637cefd0d2e24e9aa4c8
-  languageName: node
-  linkType: hard
-
-"xmlbuilder@npm:~11.0.0":
-  version: 11.0.1
-  resolution: "xmlbuilder@npm:11.0.1"
-  checksum: 10c0/74b979f89a0a129926bc786b913459bdbcefa809afaa551c5ab83f89b1915bdaea14c11c759284bb9b931e3b53004dbc2181e21d3ca9553eeb0b2a7b4e40c35b
   languageName: node
   linkType: hard
 
