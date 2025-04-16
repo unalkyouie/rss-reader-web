@@ -14,19 +14,19 @@ describe('FeedForm', () => {
 
     const nameInput = screen.getByPlaceholderText(/feed name/i);
     const urlInput = screen.getByPlaceholderText(/feed url/i);
-    const button = screen.getByText(/add feed/i);
+    const button = screen.getByRole('button', { name: /add feed/i });
 
     await act(async () => {
       await user.type(nameInput, 'Changed Feed');
 
-      await user.type(urlInput, 'url');
+      await user.type(urlInput, 'https://example.com/feed');
 
       await user.click(button);
     });
 
     expect(onAddFeed).toHaveBeenCalledWith({
       name: 'Changed Feed',
-      url: 'url',
+      url: 'https://example.com/feed',
     });
     expect(onAddFeed).toHaveBeenCalledTimes(1);
   });

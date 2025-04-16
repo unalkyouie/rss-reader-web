@@ -10,6 +10,7 @@ const FeedForm = ({ onAddFeed }: Props) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
+    console.log('Form submitted:', { name, url }); // Add this line
     if (name && url) {
       onAddFeed({ name, url });
       setName('');

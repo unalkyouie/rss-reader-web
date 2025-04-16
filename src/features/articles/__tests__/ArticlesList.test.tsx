@@ -1,9 +1,9 @@
 import { render, screen } from '@testing-library/react';
 
-import { mockArticles } from '~/mocks/index';
 import ArticlesList from '~/features/articles/ArticlesList';
+import { mockArticles } from '../../../../__mocks__';
 
-jest.mock('../hooks/useFeedArticles', () => ({
+jest.mock('~/hooks/useFeedArticles', () => ({
   __esModule: true,
   default: () => ({
     articles: mockArticles,

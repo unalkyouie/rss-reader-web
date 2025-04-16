@@ -1,10 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { mockFeeds } from '~/mocks/index';
 
 import ArticlesList from '~/features/articles/ArticlesList';
 import FeedForm from '~/features/feeds/FeedForm';
 import FeedList from '~/features/feeds/FeedList';
 import { Feed } from '~/types/global';
+
+export const mockFeeds = [
+  { id: 1, name: 'Example Title 1', url: 'url1' },
+  { id: 2, name: 'Example Title 2', url: 'url2' },
+];
 
 const App: React.FC = () => {
   const [feeds, setFeeds] = useState<Array<Feed>>([]);

@@ -2,7 +2,7 @@ import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 
 import FeedList from '~/features/feeds/FeedList';
-import { mockFeeds } from '~/mocks/index';
+import { mockFeeds } from '../../../../__mocks__';
 
 describe('FeedList', () => {
   it('renders a list of feeds', () => {
