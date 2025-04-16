@@ -9,13 +9,17 @@ type Props = {
 const ArticlesList = ({ url }: Props) => {
   const { articles, error, loading } = useFeedArticles(url);
 
-  const sortedArticles = [...articles].sort(
+  const sortedArticles = [...(articles || [])].sort(
     (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime(),
   );
 
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>Error loading articles: {error}</div>;
-  if (!articles.length) return <div>No articles found</div>;
+  if (loading) {
+    return <div>Loading articles...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <div className="articles-container">

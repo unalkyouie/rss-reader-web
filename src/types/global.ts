@@ -1,15 +1,22 @@
-export type Feed = {
+export interface Feed {
   id: number;
   name: string;
   url: string;
-};
+}
 
 export type FeedList = Array<Feed>;
 
-export type Article = {
+export interface Article {
   title: string;
   link: string;
   pubDate: string;
   feedTitle?: string;
-};
+}
 export type ArticlesList = Array<Article>;
+
+export interface ParsedArticle {
+  title: string;
+  link: string | null;
+  pubDate: Date | null;
+  feedTitle: string;
+}

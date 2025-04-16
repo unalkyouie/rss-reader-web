@@ -1,63 +1,46 @@
 import { useEffect, useState } from 'react';
-import RSSParser from 'rss-parser';
+import { FeedItem } from '@rowanmanning/feed-parser/lib/feed/item/base';
+import { parseFeed } from '@rowanmanning/feed-parser';
 
-import { ArticlesList } from '~/types/global';
+import { ParsedArticle } from '~/types/global';
 
 const useFeedArticles = (url: string) => {
-  const [articles, setArticles] = useState<ArticlesList>([]);
-  const [loading, setIsLoading] = useState<boolean>(true);
+  const [articles, setArticles] = useState<Array<ParsedArticle>>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    console.log(`Fetching articles from: ${url}`);
-    let isMounted = true;
-    const parser = new RSSParser();
-
-    const fetchArticles = async () => {
+    const fetchFeed = async () => {
       try {
-        console.log('Starting RSS fetch...');
-        const feed = await parser.parseURL(url);
-        console.log('Feed fetched successfully:', feed.title);
+        setLoading(true);
+        setError(null);
 
-        if (!isMounted) return;
-
-        if (feed.items && Array.isArray(feed.items)) {
-          const parsedArticles = feed.items.map(
-            (item: { title?: string; link?: string; pubDate?: string; feedTitle?: string }) => ({
-              title: item.title || 'Untitled',
-              link: item.link || '',
-              pubDate: item.pubDate || new Date().toISOString(),
-              feedTitle: feed.title || 'Unknown Feed',
-            }),
-          );
-
-          console.log(`Parsed ${parsedArticles.length} articles`);
-          setArticles(parsedArticles);
-        } else {
-          console.warn('Feed items missing or not an array');
-          setArticles([]);
+        const response = await fetch(url);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
         }
-      } catch (error: unknown) {
-        console.error('Error fetching feed:', error);
-        if (isMounted) {
-          setError(`Failed to load articles: error`);
-        }
+        const xml = await response.text();
+        const feed = await parseFeed(xml);
+
+        const mappedArticles: ParsedArticle[] = feed.items.map((item: FeedItem) => ({
+          title: item.title || 'No title',
+          link: item.url,
+          pubDate: item.published,
+          feedTitle: feed.title || 'No title',
+        }));
+
+        setArticles(mappedArticles);
+      } catch (err) {
+        setError(err instanceof Error ? err.message : 'Failed to fetch feed');
       } finally {
-        if (isMounted) {
-          setIsLoading(false);
-          console.log('Feed loading completed');
-        }
+        setLoading(false);
       }
     };
 
-    fetchArticles();
-
-    return () => {
-      isMounted = false;
-    };
+    fetchFeed();
   }, [url]);
 
-  return { error, loading, articles };
+  return { articles, loading, error };
 };
 
 export default useFeedArticles;
