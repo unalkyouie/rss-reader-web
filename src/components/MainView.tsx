@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import FeedList from '~/features/feeds/FeedList';
 import FeedForm from '~/features/feeds/FeedForm';
 import ArticlesGrid from '~/features/articles/ArticlesGrid';
-import '~/styles/main.css';
 import useFeedArticles from '~/hooks/useFeedArticles';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 

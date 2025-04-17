@@ -14,7 +14,6 @@ module.exports = {
     '^~/hooks/(.*)$': '<rootDir>/src/hooks/$1',
     '^~/utils/(.*)$': '<rootDir>/src/utils/$1',
   },
-
   transform: {
     '^.+\\.(ts|tsx)$': 'ts-jest',
   },

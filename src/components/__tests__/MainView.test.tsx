@@ -6,6 +6,17 @@ import MainView from '~/components/MainView';
 jest.mock('~/hooks/usePersistedFeeds');
 jest.mock('~/hooks/useFeedArticles');
 
+jest.mock('~/features/feeds/FeedForm', () => ({
+  __esModule: true,
+  default: ({ onAddFeed }: { onAddFeed: (feed: { name: string; url: string }) => void }) => {
+    return (
+      <button onClick={() => onAddFeed({ name: 'Test Feed', url: 'https://test.feed/rss' })}>
+        Add Feed
+      </button>
+    );
+  },
+}));
+
 describe('MainView', () => {
   beforeEach(() => {
     (usePersistedFeeds as jest.Mock).mockReturnValue({
