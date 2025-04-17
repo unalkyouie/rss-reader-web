@@ -44,7 +44,7 @@ Foundation for managing RSS feeds:
 - [x] A component to list current feeds
 - [x] Adding new feed - (URL validation?)
 - [ ] Editing existing feed
-- [ ] Local persistence via localStorage
+- [x] Local persistence via localStorage
 - [ ] Tests for each step
 
 Vibe check: Starting small and smart (trying) - 1. tests 2. code
