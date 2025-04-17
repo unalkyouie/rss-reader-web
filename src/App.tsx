@@ -1,28 +1,43 @@
-import React, { useState, useEffect } from 'react';
-
-import ArticlesList from '~/features/articles/ArticlesList';
+import React, { useState } from 'react';
 import FeedList from '~/features/feeds/FeedList';
+import FeedForm from '~/features/feeds/FeedForm';
+import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import { Feed } from '~/types/global';
+import '~/styles/main.css';
+import useFeedArticles from '~/hooks/useFeedArticles';
 
-const mockFeeds = [
-  { id: 1, name: 'Example Title 1', url: 'url1' },
-  { id: 2, name: 'Example Title 2', url: 'url2' },
-];
 const FEED_URL = 'https://feeds.bbci.co.uk/news/rss.xml';
 
 const App: React.FC = () => {
-  const [feeds, setFeeds] = useState<Array<Feed>>([]);
+  const [feeds, setFeeds] = useState<Feed[]>([{ id: 1, name: 'BBC News', url: FEED_URL }]);
+  const [selectedFeed, setSelectedFeed] = useState<string | null>(FEED_URL);
 
-  useEffect(() => {
-    console.log('App component mounted');
-    setFeeds(mockFeeds);
-  }, []);
+  const { articles, error, loading } = useFeedArticles(selectedFeed || '');
+
+  const handleAddFeed = (newFeed: { name: string; url: string }) => {
+    const nextId = feeds.length ? Math.max(...feeds.map((f) => f.id)) + 1 : 1;
+    setFeeds([...feeds, { ...newFeed, id: nextId }]);
+  };
+
+  const handleSelectFeed = (url: string) => {
+    setSelectedFeed(url);
+  };
 
   return (
-    <div>
-      <h1>RSS Reader</h1>
-      <FeedList feeds={feeds} />
-      <ArticlesList url={FEED_URL} />
+    <div className="main-feed-page">
+      <aside className="sidebar">
+        <FeedForm onAddFeed={handleAddFeed} />
+        <FeedList
+          feeds={feeds}
+          onSelectFeed={handleSelectFeed}
+          selectedFeedUrl={selectedFeed ?? undefined}
+        />
+      </aside>
+      <main className="content">
+        {loading && <div>Loading articles...</div>}
+        {error && <div className="error">Error loading articles: {error}</div>}
+        {!loading && !error && <ArticlesGrid articles={articles} />}
+      </main>
     </div>
   );
 };

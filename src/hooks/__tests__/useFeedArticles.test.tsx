@@ -14,6 +14,7 @@ const mockFeed = {
     { title: 'Article 2', url: 'http://example.com/2', published: '2025-04-10' },
   ],
   title: 'Example Feed',
+  description: 'An example feed description',
 };
 
 describe('useFeedArticles hook', () => {
@@ -30,7 +31,7 @@ describe('useFeedArticles hook', () => {
     mockFetch.mockResolvedValue({
       ok: true,
       status: 200,
-      text: async () => 'mock-xml',
+      json: async () => ({ contents: 'mock-xml' }), // Ensure json() returns the expected structure
     });
     (parseFeed as jest.Mock).mockResolvedValue(mockFeed);
   });
@@ -42,17 +43,23 @@ describe('useFeedArticles hook', () => {
   it('should fetch and parse RSS feed articles', async () => {
     const { result } = renderHook(() => useFeedArticles('http://example.com/feed'));
 
+    // Ensure initial state is correct
     expect(result.current.loading).toBe(true);
     expect(result.current.articles).toEqual([]);
     expect(result.current.error).toBeNull();
 
+    // Wait for hook to complete the fetch and parsing
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
     });
 
+    // Verify the fetch and parsing process
     expect(mockFetch).toHaveBeenCalledTimes(1);
-    expect(mockFetch).toHaveBeenCalledWith('http://example.com/feed');
+    expect(mockFetch).toHaveBeenCalledWith(
+      'https://api.allorigins.win/get?url=http%3A%2F%2Fexample.com%2Ffeed',
+    ); // Check URL with proxy
 
+    // Validate final result
     expect(result.current.loading).toBe(false);
     expect(result.current.error).toBeNull();
     expect(result.current.articles).toHaveLength(2);
@@ -65,7 +72,7 @@ describe('useFeedArticles hook', () => {
     mockFetch.mockResolvedValueOnce({
       ok: false,
       status: 404,
-      text: async () => 'Not found',
+      json: async () => ({ contents: 'Not found' }), // Ensure proper mock response format
     });
 
     const { result } = renderHook(() => useFeedArticles('http://example.com/error'));

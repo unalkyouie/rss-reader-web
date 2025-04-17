@@ -19,4 +19,5 @@ export interface ParsedArticle {
   link: string | null;
   pubDate: Date | null;
   feedTitle: string;
+  description: string | null;
 }

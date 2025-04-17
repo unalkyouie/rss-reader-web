@@ -7,35 +7,56 @@ type Props = {
 const FeedForm = ({ onAddFeed }: Props) => {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    console.log('Form submitted:', { name, url }); // Add this line
-    if (name && url) {
-      onAddFeed({ name, url });
-      setName('');
-      setUrl('');
+
+    if (!name.trim() || !url.trim()) {
+      setError('Both fields are required');
+      return;
     }
+
+    try {
+      new URL(url);
+    } catch {
+      setError('Please enter a valid URL');
+      return;
+    }
+
+    onAddFeed({ name, url });
+    setName('');
+    setUrl('');
+    setError('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <input
-        type="text"
-        placeholder="Feed Name"
-        value={name}
-        onChange={(e) => setName(e.target.value)}
-        required
-      />
-      <input
-        type="url"
-        placeholder="Feed URL"
-        value={url}
-        onChange={(e) => setUrl(e.target.value)}
-        required
-      />
-      <button type="submit">Add Feed</button>
-    </form>
+    <div className="feed-form">
+      <form onSubmit={handleSubmit}>
+        <div className="form-group">
+          <label htmlFor="feed-name">Feed Name</label>
+          <input
+            id="feed-name"
+            type="text"
+            placeholder="e.g. TechCrunch"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+          />
+        </div>
+        <div className="form-group">
+          <label htmlFor="feed-url">Feed URL</label>
+          <input
+            id="feed-url"
+            type="url"
+            placeholder="https://example.com/rss"
+            value={url}
+            onChange={(e) => setUrl(e.target.value)}
+          />
+        </div>
+        {error && <p className="error">{error}</p>}
+        <button type="submit">Add Feed</button>
+      </form>
+    </div>
   );
 };
 

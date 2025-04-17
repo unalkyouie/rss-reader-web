@@ -1,4 +1,4 @@
-import { render, act } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import { screen } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 
@@ -16,13 +16,10 @@ describe('FeedForm', () => {
     const urlInput = screen.getByPlaceholderText(/feed url/i);
     const button = screen.getByRole('button', { name: /add feed/i });
 
-    await act(async () => {
-      await user.type(nameInput, 'Changed Feed');
+    await user.type(nameInput, 'Changed Feed');
+    await user.type(urlInput, 'https://example.com/feed');
 
-      await user.type(urlInput, 'https://example.com/feed');
-
-      await user.click(button);
-    });
+    await user.click(button);
 
     expect(onAddFeed).toHaveBeenCalledWith({
       name: 'Changed Feed',

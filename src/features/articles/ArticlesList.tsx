@@ -1,53 +1,52 @@
 import React from 'react';
-
 import useFeedArticles from '~/hooks/useFeedArticles';
+import { formatDate } from '~/utils/formatDate';
 
-type Props = {
+interface Props {
   url: string;
-};
+}
 
 const ArticlesList = ({ url }: Props) => {
   const { articles, error, loading } = useFeedArticles(url);
 
-  const sortedArticles = [...(articles || [])].sort(
-    (a, b) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime(),
+  if (loading) return <div>Loading articles...</div>;
+  if (error) return <div className="error">Error: {error}</div>;
+
+  if (!articles || articles.length === 0) {
+    return <div>No articles available.</div>;
+  }
+
+  const sortedArticles = [...articles].sort(
+    (a, b) => new Date(b.pubDate ?? 0).getTime() - new Date(a.pubDate ?? 0).getTime(),
   );
 
-  if (loading) {
-    return <div>Loading articles...</div>;
-  }
-
-  if (error) {
-    return <div>Error: {error}</div>;
-  }
+  const feedTitle = sortedArticles[0]?.feedTitle ?? 'Feed';
 
   return (
-    <div className="articles-container">
-      <h2>Articles</h2>
+    <div className="articles-grid">
+      <div className="feed-header">
+        <h2>{feedTitle}</h2>
+      </div>
 
-      {sortedArticles.length === 0 ? (
-        <div>No articles match your search query</div>
-      ) : (
-        <ul className="articles-list">
-          {sortedArticles.map((article, index) => (
-            <li key={`${article.link}-${index}`} className="article-item">
-              <a
-                href={article.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="article-link"
-              >
-                {article.title}
-              </a>
-              <div className="article-meta">
-                <small>
-                  {article.feedTitle} - {new Date(article.pubDate).toLocaleString()}
-                </small>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
+      {sortedArticles.map((article, index) => (
+        <article key={`${article.link ?? ''}-${index}`} className="article-item">
+          {article.link ? (
+            <a
+              href={article.link}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="article-link"
+            >
+              {article.title}
+            </a>
+          ) : (
+            <span className="article-link">{article.title}</span>
+          )}
+          <div className="article-meta">
+            <small>{formatDate(article.pubDate)}</small>
+          </div>
+        </article>
+      ))}
     </div>
   );
 };
