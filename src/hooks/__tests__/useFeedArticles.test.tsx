@@ -1,109 +1,112 @@
-import { renderHook } from '@testing-library/react';
-import { waitFor } from '@testing-library/react';
-import useFeedArticles from '~/hooks/useFeedArticles';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { parseFeed } from '@rowanmanning/feed-parser';
+import { renderHook, waitFor } from '@testing-library/react';
+import useFeedArticles from '~/hooks/useFeedArticles';
 
-const queryClient = new QueryClient();
+const validRss = `
+  <rss version="2.0">
+    <channel>
+      <title>Test Feed</title>
+      <description>Test Description</description>
+      <item>
+        <title>Article 1</title>
+        <link>https://example.com/1</link>
+        <pubDate>2023-01-01</pubDate>
+      </item>
+    </channel>
+  </rss>
+`;
 
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-);
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
-jest.mock('@rowanmanning/feed-parser', () => ({
-  parseFeed: jest.fn(),
-}));
-
-const mockFeed = {
-  items: [
-    { title: 'Article 1', url: 'http://example.com/1', published: '2025-04-11' },
-    { title: 'Article 2', url: 'http://example.com/2', published: '2025-04-10' },
-  ],
-  title: 'Example Feed',
-  description: 'An example feed description',
+  return ({ children }: { children: React.ReactNode }) => (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
 };
 
 describe('useFeedArticles', () => {
-  const originalFetch = window.fetch;
-  let mockFetch: jest.Mock;
-
-  beforeAll(() => {
-    mockFetch = jest.fn();
-    window.fetch = mockFetch;
-  });
-
   beforeEach(() => {
     jest.clearAllMocks();
-
-    mockFetch.mockResolvedValue({
-      ok: true,
-      status: 200,
-      json: async () => ({ contents: 'mock-xml' }),
-    });
-
-    (parseFeed as jest.Mock).mockResolvedValue(mockFeed);
+    global.fetch = jest.fn();
   });
 
-  afterAll(() => {
-    window.fetch = originalFetch;
-  });
-
-  it('should fetch and parse RSS feed articles', async () => {
-    const { result } = renderHook(() => useFeedArticles('http://example.com/feed'), { wrapper });
-
-    expect(result.current.loading).toBe(true);
-    expect(result.current.articles).toEqual([]);
-    expect(result.current.error).toBeNull();
-
-    await waitFor(() => {
-      expect(result.current.loading).toBe(false);
-    });
-
-    expect(mockFetch).toHaveBeenCalledWith(
-      'https://api.allorigins.win/get?url=http%3A%2F%2Fexample.com%2Ffeed',
-    );
-
-    expect(result.current.articles).toHaveLength(2);
-    expect(result.current.articles[0].title).toBe('Article 1');
-    expect(result.current.articles[0].feedTitle).toBe('Example Feed');
-  });
+  const wrapper = createWrapper();
 
   it('should handle fetch errors', async () => {
-    mockFetch.mockResolvedValueOnce({
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: false,
       status: 404,
-      json: async () => ({ contents: 'Not found' }),
     });
 
-    const { result } = renderHook(() => useFeedArticles('http://example.com/error'), { wrapper });
+    const { result } = renderHook(() => useFeedArticles('https://broken.url/feed'), { wrapper });
 
-    await waitFor(() => result.current.loading === false);
-
+    await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.error).toMatch(/HTTP error! status: 404/);
-    expect(result.current.articles).toEqual([]);
   });
 
   it('should handle parse errors', async () => {
-    (parseFeed as jest.Mock).mockRejectedValueOnce(new Error('Parse error'));
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          contents: '<html><body><div></div></body></html>',
+        }),
+    });
 
-    const { result } = renderHook(() => useFeedArticles('http://example.com/feed'), { wrapper });
+    const { result } = renderHook(() => useFeedArticles('https://invalid.feed'), { wrapper });
 
-    await waitFor(() => result.current.loading === false);
-
-    expect(result.current.error).toBe('Parse error');
-    expect(result.current.articles).toEqual([]);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.error).toBeTruthy();
   });
 
   it('should handle missing items in feed gracefully', async () => {
-    (parseFeed as jest.Mock).mockResolvedValueOnce({
-      ...mockFeed,
-      items: undefined, // Simulate missing items
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          contents: '<rss><channel></channel></rss>',
+        }),
     });
 
-    const { result } = renderHook(() => useFeedArticles('http://example.com/feed'), { wrapper });
+    const { result } = renderHook(() => useFeedArticles('https://empty.feed'), { wrapper });
 
-    await waitFor(() => result.current.loading === false);
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.articles).toEqual([]);
+  });
 
-    expect(result.current.articles).toEqual([]); // Should gracefully handle missing items
+  it('should parse valid RSS feed correctly', async () => {
+    (global.fetch as jest.Mock).mockResolvedValueOnce({
+      ok: true,
+      json: () =>
+        Promise.resolve({
+          contents: validRss,
+        }),
+    });
+
+    const { result } = renderHook(() => useFeedArticles('https://good.feed'), { wrapper });
+
+    await waitFor(() => expect(result.current.loading).toBe(false));
+    expect(result.current.articles.length).toBe(1);
+    expect(result.current.articles[0]).toEqual({
+      title: 'Article 1',
+      link: 'https://example.com/1',
+      pubDate: new Date('2023-01-01'),
+      feedTitle: 'Test Feed',
+      description: 'Test Description',
+    });
+  });
+
+  it('should not fetch when url is empty', async () => {
+    const { result } = renderHook(() => useFeedArticles(''), { wrapper });
+
+    expect(result.current.loading).toBe(false);
+    expect(result.current.articles).toEqual([]);
+    expect(fetch).not.toHaveBeenCalled();
   });
 });

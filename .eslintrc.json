@@ -6,6 +6,14 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:prettier/recommended"
   ],
+  "overrides": [
+    {
+      "files": ["**/*.test.tsx"],
+      "rules": {
+        "react/display-name": "off"
+      }
+    }
+  ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "ecmaVersion": 2020,

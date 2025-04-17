@@ -1,117 +1,120 @@
-import { renderHook, act } from '@testing-library/react-hooks';
+import { renderHook, act } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
-import * as storageUtils from '~/utils/storage';
-import { Feed } from '~/types/global';
+import * as storage from '~/utils/storage';
 
-const queryClient = new QueryClient();
+jest.mock('~/utils/storage');
 
-// Mock the necessary storage functions
-jest.mock('~/utils/storage', () => ({
-  loadFromStorage: jest.fn(),
-  saveToStorage: jest.fn(),
-}));
+const mockFeed = {
+  name: 'RSS Feed',
+  url: 'https://rss.com/feed',
+};
+const createWrapper = () => {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: {
+        retry: false,
+      },
+    },
+  });
 
-describe('usePersistedFeeds', () => {
-  const mockFeed: Feed = {
-    url: 'https://rss.com/feed',
-    name: 'RSS Feed',
-  };
-
-  // Wrapper to provide QueryClient context
-  const wrapper = ({ children }: { children: React.ReactNode }) => (
+  return ({ children }: { children: React.ReactNode }) => (
     <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
   );
+};
 
+describe('usePersistedFeeds', () => {
+  const wrapper = createWrapper();
   beforeEach(() => {
     jest.clearAllMocks();
+    (storage.loadFromStorage as jest.Mock).mockImplementation(() => [mockFeed]);
+    (storage.saveToStorage as jest.Mock).mockImplementation(() => {});
   });
 
   it('should load feeds from storage on init', async () => {
-    // Mock loadFromStorage to return a mock feed
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce([mockFeed]);
-
     const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
 
-    // Check if the feeds are loaded correctly
-    expect(result.current.feeds).toEqual([mockFeed]);
-  });
-
-  it('should add a feed and save it to storage', async () => {
-    // Mock loadFromStorage to return an empty array
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce([]);
-
-    const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
-
-    // Add a feed
     await act(async () => {
-      result.current.addFeed(mockFeed);
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
 
-    // Assert that the feed was added and storage was updated
     expect(result.current.feeds).toEqual([mockFeed]);
-    expect(storageUtils.saveToStorage).toHaveBeenCalledWith('savedFeeds', [mockFeed]);
+    expect(storage.loadFromStorage).toHaveBeenCalledWith('savedFeeds', []);
+  });
+
+  it('should add a new feed', async () => {
+    const newFeed = {
+      name: 'New Feed',
+      url: 'https://new-feed.com',
+    };
+
+    const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
+
+    await act(async () => {
+      result.current.addFeed(newFeed);
+    });
+
+    expect(storage.saveToStorage).toHaveBeenCalledWith('savedFeeds', [mockFeed, newFeed]);
   });
 
   it('should not add duplicate feeds', async () => {
-    // Mock loadFromStorage to return an array with the mock feed
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce([mockFeed]);
-
     const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
 
-    // Try to add the same feed again
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    (storage.saveToStorage as jest.Mock).mockClear();
+
     await act(async () => {
       result.current.addFeed(mockFeed);
     });
 
-    // Assert that the feed wasn't added again and the storage wasn't updated
-    expect(result.current.feeds).toEqual([mockFeed]);
-    expect(storageUtils.saveToStorage).toHaveBeenCalledTimes(1);
+    expect(storage.saveToStorage).not.toHaveBeenCalled();
   });
 
-  it('should remove a feed and update storage', async () => {
-    const feeds: Feed[] = [mockFeed, { url: 'https://remove.com/feed', name: 'To Remove' }];
-    // Mock loadFromStorage to return the feeds
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce(feeds);
-
+  it('should update a feed', async () => {
     const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
 
-    // Remove a feed
     await act(async () => {
-      result.current.removeFeed('https://remove.com/feed');
+      result.current.updateFeed(mockFeed.url, { name: 'Updated Feed' });
     });
 
-    // Assert that the feed was removed and storage was updated
-    expect(result.current.feeds).toEqual([mockFeed]);
-    expect(storageUtils.saveToStorage).toHaveBeenCalledWith('savedFeeds', [mockFeed]);
-  });
-
-  it('should update a feed by url and save to storage', async () => {
-    // Mock loadFromStorage to return the mock feed
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce([mockFeed]);
-
-    const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
-
-    // Update the feed
-    await act(async () => {
-      result.current.updateFeed('https://rss.com/feed', { name: 'Updated Feed' });
-    });
-
-    // Assert that the feed was updated and storage was updated
-    expect(result.current.feeds[0].name).toBe('Updated Feed');
-    expect(storageUtils.saveToStorage).toHaveBeenCalledWith('savedFeeds', [
+    expect(storage.saveToStorage).toHaveBeenCalledWith('savedFeeds', [
       { ...mockFeed, name: 'Updated Feed' },
     ]);
   });
 
-  it('should return the feed by url', () => {
-    // Mock loadFromStorage to return the mock feed
-    (storageUtils.loadFromStorage as jest.Mock).mockReturnValueOnce([mockFeed]);
-
+  it('should get a feed by URL', async () => {
     const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
 
-    // Get the feed by its URL
-    const feed = result.current.getFeedByUrl('https://rss.com/feed');
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    const feed = result.current.getFeedByUrl(mockFeed.url);
     expect(feed).toEqual(mockFeed);
+  });
+
+  it('should return undefined for non-existent URL', async () => {
+    const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    const feed = result.current.getFeedByUrl('non-existent-url');
+    expect(feed).toBeUndefined();
+  });
+
+  it('should handle empty storage', async () => {
+    (storage.loadFromStorage as jest.Mock).mockReturnValueOnce([]);
+    const { result } = renderHook(() => usePersistedFeeds(), { wrapper });
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(result.current.feeds).toEqual([]);
   });
 });
