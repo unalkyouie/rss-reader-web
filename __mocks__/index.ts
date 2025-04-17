@@ -1,21 +1,22 @@
-import { ArticlesList, FeedList } from '~/types/global';
+import { ParsedArticle, Feed } from '~/types/global';
 
-export const mockFeeds: FeedList = [
-  { id: 1, name: 'Example Title 1', url: 'url1' },
-  { id: 2, name: 'Example Title 2', url: 'url2' },
+export const mockFeeds: Array<Feed> = [
+  { id: 1, name: 'Example Feed 1', url: 'https://example.com/rss1.xml' },
+  { id: 2, name: 'Example Feed 2', url: 'https://example.com/rss2.xml' },
 ];
-
-export const mockArticles: ArticlesList = [
+export const mockArticles: ParsedArticle[] = [
   {
     title: 'First Article',
-    link: 'https://example.com/1',
-    pubDate: '2025-04-10T12:00:00Z',
-    feedTitle: 'Example Title 1',
+    link: 'https://example.com/article-1',
+    description: 'Description for article 1',
+    pubDate: new Date('2023-10-01'),
+    feedTitle: 'Feed One',
   },
   {
     title: 'Second Article',
-    link: 'https://example.com/2',
-    pubDate: '2025-04-11T12:00:00Z',
-    feedTitle: 'Example Title 2',
+    link: null,
+    description: 'Description for article 2',
+    pubDate: new Date('2023-10-02'),
+    feedTitle: 'Feed One',
   },
 ];
