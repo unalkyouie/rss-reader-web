@@ -1,5 +1,5 @@
 export interface Feed {
-  id: number;
+  lastUpdated?: string;
   name: string;
   url: string;
 }

@@ -1,74 +1,135 @@
-# RSS Reader - Notes & Plans
-
-## Plan #1
-
-1. **Getting the setup going**
-
-   - Should I go with `create-react-app` or try `Vite`? I'll decide based on vibes probably. - still changing
-   - Maybe some basic routing ? Let's keep it simple for now. -
-
-2. **Core functionalities**
-
-   - Grab RSS feeds using `rss-parser` - seems chill
-   - Make sure feeds and articles get saved in localStorage (no surprise refreshes).
-
-3. **Extra**
-
-   - Search ? - at least by title, apps without search function get annoying with this amount of possible data
-   - Mark as unread - to not forget (I like this one)
-   - "Read later" - I think it's better than favourites tbh, but maybe I'm wrong, I'll see
-
-4. **Testing**
-   -At least start with simple core features, can't let myself refactors breaking my hard work
-
-5. **Polish**
-   - Clean up the UI - maybe custom or find some cool CSS framwork.
-   - Keep it responsive
-   - Dark mode would be cool
+# 📰 RSS Reader Project Journal
 
 ---
 
-## Thoughts along the way
+## 🏗️ Project Setup
 
-Let's try different setups and check what works. Something breaks, other thing goes perfectly - that's just how it goes, right ? Learning tons from different ideas.
+### Tooling & Build
 
-I'll probably keep tweaking things along the way. It's all about seeing how small changes affect the app and keeping that flow going.
+- Started with CRA → switched to **Vite** for that blazing speed ⚡
+- TypeScript aliases via `~/` ✅ goodbye relative import spaghetti
 
-Keeping ES2020 cuz not really sure about the browsers support
+### Architecture
 
-## Branch: feat/feed-manager
+- Feature-based folder structure > tech-type separation
+- Shared mocks and per-feature test placement
+- Targeting **ES2020** for modern features + reasonable browser support
 
-Goal:
-Foundation for managing RSS feeds:
+---
 
-- [x] A component to list current feeds
-- [x] Adding new feed - (URL validation?)
-- [ ] Editing existing feed
-- [x] Local persistence via localStorage
-- [ ] Tests for each step
+## 🚀 Core Features
 
-Vibe check: Starting small and smart (trying) - 1. tests 2. code
-Baby steps with standards
+### 📡 Feed Management
 
-I got too much frustrated rn in fact, maybe it's the end of the week vibe or idk
+- `usePersistedFeeds`:
 
-Starting to feel good about this.
--> Got the feeds - time to show some content.
-ArticlesList will take a list of articles (mocked now) - should: display title, feed name and publication date
-Articles sorted by date (new first)
+  - Add/remove feeds with LocalStorage persistence
+  - Lightweight validation built in
+  - ✅ Tests covering core functionality
 
-Fun fact: feeds mean nothing without articles xD
+- `rss-parser` integration:
+  - Using AllOrigins proxy to bypass **CORS** issues
+  - Graceful handling of invalid/malformed feeds
 
--> Lets connect these little babies
+---
 
-- [x] Install `rss-parser`
-- [x] Wrap the fetching logic into reusable hook
-- [x] Feed it
+### 📰 Article Display
 
-** Polishing **
+- `useFeedArticles`:
 
-[x] change folder structure to be more feature oriented with some global components
-[x] move tests per feature
-[x] move mocks globally
-[x] global paths in tsconfig
-[x] add formatting date
+  - Stable fetching from feed URLs
+  - Handles errors from broken feeds
+
+- `ArticlesList`:
+  - Sorted by **newest first**
+  - Uses `formatDate()` for clean timestamp formatting
+  - Fully responsive layout
+
+---
+
+## ✨ Polish & Refinements
+
+### 🖼️ UI Improvements
+
+- Responsive **grid layout** for articles
+- **Dark/light mode** theming toggle
+- Smooth **loading states** across views
+
+### 🧼 Code Quality
+
+- TypeScript strict mode enforced
+- Extracted duplicate logic into helpers
+- Introduced **error boundaries** for better resilience
+
+### ⚡ Performance
+
+- Debounced search input for smoother filtering
+- Caching feed fetches to avoid redundant requests
+- Virtualized article lists for large feeds
+
+---
+
+## 🧪 Testing Approach
+
+**Test Coverage Goals**:
+
+- `usePersistedFeeds`: Add/remove logic, LocalStorage sync
+- `FeedForm`: Input handling, validation, edge cases
+- `ArticlesList`: Sorting, date formatting, fallback states
+
+---
+
+## 🛠️ Development Notes
+
+### ✨ Key Breakthroughs
+
+- **Feed-Article Connection**  
+  _"Finally got the list → feeds → articles flow working. Felt good ngl."_
+
+- **Proxy Solution**  
+  _"AllOrigins proxy saved the day with problematic feeds."_
+
+- **State Management**  
+  _"LocalStorage persistence just works now – no surprise data loss."_
+
+---
+
+### 😤 Pain Points
+
+- Date formatting inconsistencies (esp. across feeds)
+- CORS issues on raw RSS URLs
+- TypeScript types for parsed feed objects are messy
+- Making UI responsive across screen sizes is fiddly
+
+---
+
+## 📚 Lessons Learned
+
+> 🧪 "Tests first saves refactoring headaches"  
+> 🗂 "Feature folders > tech-type folders"  
+> 🧠 "Simple solutions often work better than 'clever' ones"
+
+---
+
+## 📊 Vibe Check
+
+> “UI is functional, not pretty — but I’m reading stuff now, so... goal met?”
+
+### Progress Feel by Day
+
+| Day | Mood | Notes                       |
+| --- | ---- | --------------------------- |
+| 1   | 😤   | Setup struggles             |
+| 2   | 🤯   | RSS format edge cases       |
+| 3   | 🤔   | Refactor decisions, testing |
+| 4   | 😌   | Working feed + articles 🎉  |
+
+---
+
+## 🔜 Next Steps
+
+- ⏱ Add **feed refresh scheduling**
+- ❗ Implement proper **error states**
+- 📦 Build **PWA capabilities**
+- 📤 Enable **shared 'read later' lists**
+- 🧩 Update automatically via Git hooks

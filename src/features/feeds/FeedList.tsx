@@ -18,7 +18,7 @@ const FeedList = ({ feeds, onSelectFeed, selectedFeedUrl }: Props) => {
       <ul>
         {feeds.map((feed) => (
           <li
-            key={feed.id}
+            key={feed.url}
             onClick={() => onSelectFeed(feed.url)}
             className={`feed-item ${selectedFeedUrl === feed.url ? 'selected' : ''}`}
             style={{ cursor: 'pointer', marginBottom: '10px' }}
