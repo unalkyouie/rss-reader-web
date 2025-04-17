@@ -6,7 +6,7 @@ import useFeedArticles from '~/hooks/useFeedArticles';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 
 const MainView: React.FC = () => {
-  const [selectedFeed, setSelectedFeed] = useState<string | null>(null); // Default selected feed to null
+  const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
 
   const { articles, error, loading } = useFeedArticles(selectedFeed || '');
   const { feeds, addFeed } = usePersistedFeeds();
@@ -21,19 +21,21 @@ const MainView: React.FC = () => {
 
   return (
     <div className="main-feed-page">
-      <aside className="sidebar">
-        <FeedForm onAddFeed={handleAddFeed} />
-        <FeedList
-          feeds={feeds}
-          onSelectFeed={handleSelectFeed}
-          selectedFeedUrl={selectedFeed ?? undefined}
-        />
-      </aside>
-      <main className="content">
-        {loading && <div>Loading articles...</div>}
-        {error && <div className="error">Error loading articles: {error}</div>}
-        {!loading && !error && <ArticlesGrid articles={articles} />}
-      </main>
+      <div className="layout">
+        <aside className="sidebar">
+          <FeedForm onAddFeed={handleAddFeed} />
+          <FeedList
+            feeds={feeds}
+            onSelectFeed={handleSelectFeed}
+            selectedFeedUrl={selectedFeed ?? undefined}
+          />
+        </aside>
+        <main className="main-content">
+          {loading && <div>Loading articles...</div>}
+          {error && <div className="error">Error loading articles: {error}</div>}
+          {!loading && !error && <ArticlesGrid articles={articles} />}
+        </main>
+      </div>
     </div>
   );
 };

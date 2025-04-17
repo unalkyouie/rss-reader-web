@@ -1,36 +1,63 @@
-import { useEffect, useState } from 'react';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Feed } from '~/types/global';
-import { saveToStorage, loadFromStorage } from '~/utils/storage';
+import { loadFromStorage, saveToStorage } from '~/utils/storage';
 
 const FEEDS_KEY = 'savedFeeds';
 
+const loadFeeds = (): Feed[] => loadFromStorage(FEEDS_KEY, []);
+
 const usePersistedFeeds = () => {
-  const [feeds, setFeeds] = useState<Feed[]>(() => loadFromStorage(FEEDS_KEY, []));
+  const queryClient = useQueryClient();
 
-  useEffect(() => {
-    saveToStorage(FEEDS_KEY, feeds);
-  }, [feeds]);
+  const { data: feeds = [] } = useQuery({
+    queryKey: ['feeds'],
+    queryFn: () => loadFeeds(),
+    staleTime: Infinity,
+  });
 
-  const addFeed = (feed: Feed) => {
-    const exists = feeds.some((f) => f.url === feed.url);
-    if (!exists) {
-      setFeeds((prev) => [...prev, feed]);
-    }
-  };
+  const { mutate: addFeed } = useMutation({
+    mutationFn: async (newFeed: Feed) => {
+      const current = loadFeeds();
+      const exists = current.some((f) => f.url === newFeed.url);
+      const updated = exists ? current : [...current, newFeed];
+      saveToStorage(FEEDS_KEY, updated);
+      return Promise.resolve(updated);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['feeds'], data);
+    },
+  });
 
-  const removeFeed = (url: string) => {
-    setFeeds((prev) => prev.filter((feed) => feed.url !== url));
-  };
+  const { mutate: removeFeed } = useMutation({
+    mutationFn: async (url: string) => {
+      const current = loadFeeds();
+      const updated = current.filter((f) => f.url !== url);
+      saveToStorage(FEEDS_KEY, updated);
+      return Promise.resolve(updated);
+    },
+    onSuccess: (data) => {
+      queryClient.setQueryData(['feeds'], data);
+    },
+  });
 
   const updateFeed = (url: string, updates: Partial<Feed>) => {
-    setFeeds((prev) => prev.map((feed) => (feed.url === url ? { ...feed, ...updates } : feed)));
+    const current = loadFeeds();
+    const updated = current.map((feed) => (feed.url === url ? { ...feed, ...updates } : feed));
+    saveToStorage(FEEDS_KEY, updated);
+    queryClient.setQueryData(['feeds'], updated);
   };
 
   const getFeedByUrl = (url: string) => {
     return feeds.find((feed) => feed.url === url);
   };
 
-  return { feeds, addFeed, removeFeed, updateFeed, getFeedByUrl };
+  return {
+    feeds,
+    addFeed,
+    removeFeed,
+    updateFeed,
+    getFeedByUrl,
+  };
 };
 
 export default usePersistedFeeds;
