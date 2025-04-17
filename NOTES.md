@@ -42,7 +42,7 @@ Goal:
 Foundation for managing RSS feeds:
 
 - [x] A component to list current feeds
-- [ ] Adding new feed - (URL validation?)
+- [x] Adding new feed - (URL validation?)
 - [ ] Editing existing feed
 - [ ] Local persistence via localStorage
 - [ ] Tests for each step
@@ -63,7 +63,7 @@ Fun fact: feeds mean nothing without articles xD
 
 - [x] Install `rss-parser`
 - [x] Wrap the fetching logic into reusable hook
-- [ ] Feed it
+- [x] Feed it
 
 ** Polishing **
 
@@ -71,6 +71,4 @@ Fun fact: feeds mean nothing without articles xD
 [x] move tests per feature
 [x] move mocks globally
 [x] global paths in tsconfig
-[ ] add utils for parsing RSS
-[ ] add formatting date
-[ ] add glovbal reusable components (Button, Input ...)
+[x] add formatting date

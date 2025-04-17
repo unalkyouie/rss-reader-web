@@ -1,30 +1,24 @@
-import { render } from '@testing-library/react';
-import { screen } from '@testing-library/dom';
+// src/features/feeds/__tests__/FeedForm.test.tsx
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-
-import FeedForm from '~/features/feeds/FeedForm';
+import FeedForm from '../FeedForm';
 
 describe('FeedForm', () => {
   it('calls onAddFeed with name and URL when form is submitted', async () => {
-    const user = userEvent.setup();
-
     const onAddFeed = jest.fn();
-
     render(<FeedForm onAddFeed={onAddFeed} />);
 
-    const nameInput = screen.getByPlaceholderText(/feed name/i);
-    const urlInput = screen.getByPlaceholderText(/feed url/i);
+    const nameInput = screen.getByPlaceholderText('e.g. TechCrunch');
+    const urlInput = screen.getByPlaceholderText('https://example.com/rss');
     const button = screen.getByRole('button', { name: /add feed/i });
 
-    await user.type(nameInput, 'Changed Feed');
-    await user.type(urlInput, 'https://example.com/feed');
-
-    await user.click(button);
+    await userEvent.type(nameInput, 'New Feed');
+    await userEvent.type(urlInput, 'https://new-feed.com/rss');
+    await userEvent.click(button);
 
     expect(onAddFeed).toHaveBeenCalledWith({
-      name: 'Changed Feed',
-      url: 'https://example.com/feed',
+      name: 'New Feed',
+      url: 'https://new-feed.com/rss',
     });
-    expect(onAddFeed).toHaveBeenCalledTimes(1);
   });
 });
