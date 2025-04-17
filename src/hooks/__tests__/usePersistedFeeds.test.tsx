@@ -1,5 +1,5 @@
 import { renderHook, act } from '@testing-library/react';
-import { usePersistedFeeds } from '~/hooks/usePersistedFeeds';
+import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 import * as storageUtils from '~/utils/storage';
 import { Feed } from '~/types/global';
 

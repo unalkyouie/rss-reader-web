@@ -1,0 +1,74 @@
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import usePersistedFeeds from '~/hooks/usePersistedFeeds';
+import useFeedArticles from '~/hooks/useFeedArticles';
+import MainView from '~/components/MainView';
+
+jest.mock('~/hooks/usePersistedFeeds');
+jest.mock('~/hooks/useFeedArticles');
+
+describe('MainView', () => {
+  beforeEach(() => {
+    (usePersistedFeeds as jest.Mock).mockReturnValue({
+      feeds: [{ name: 'BBC News', url: 'https://feeds.bbci.co.uk/news/rss.xml' }],
+      addFeed: jest.fn(),
+      removeFeed: jest.fn(),
+    });
+
+    (useFeedArticles as jest.Mock).mockReturnValue({
+      articles: [{ title: 'Article 1', url: 'https://article1.com' }],
+      loading: false,
+      error: null,
+    });
+  });
+
+  it('renders the main view with the feed list and articles', () => {
+    render(<MainView />);
+
+    expect(screen.getByText('BBC News')).toBeInTheDocument();
+
+    expect(screen.getByText('Article 1')).toBeInTheDocument();
+  });
+
+  it('selects a feed and updates the articles', async () => {
+    render(<MainView />);
+
+    fireEvent.click(screen.getByText('BBC News'));
+
+    await waitFor(() => {
+      expect(useFeedArticles).toHaveBeenCalledWith('https://feeds.bbci.co.uk/news/rss.xml');
+    });
+  });
+
+  it('adds a new feed and updates the feed list', () => {
+    render(<MainView />);
+
+    const addFeedButton = screen.getByText('Add Feed');
+    fireEvent.click(addFeedButton);
+
+    expect(usePersistedFeeds().addFeed).toHaveBeenCalled();
+  });
+
+  it('displays loading state when articles are loading', () => {
+    (useFeedArticles as jest.Mock).mockReturnValue({
+      articles: [],
+      loading: true,
+      error: null,
+    });
+
+    render(<MainView />);
+
+    expect(screen.getByText('Loading articles...')).toBeInTheDocument();
+  });
+
+  it('displays error state when there is an error fetching articles', () => {
+    (useFeedArticles as jest.Mock).mockReturnValue({
+      articles: [],
+      loading: false,
+      error: 'Error loading articles',
+    });
+
+    render(<MainView />);
+
+    expect(screen.getByText('Error loading articles: Error loading articles')).toBeInTheDocument();
+  });
+});
