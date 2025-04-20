@@ -10,6 +10,24 @@ configure({
   asyncUtilTimeout: 1000,
 });
 
+if (typeof TextEncoder === 'undefined') {
+  global.TextEncoder = class {
+    encoding = 'utf-8';
+
+    encode(str: string) {
+      return new Uint8Array(str.split('').map((c) => c.charCodeAt(0)));
+    }
+    encodeInto(str: string, target: Uint8Array): { read: number; written: number } {
+      const encoded = this.encode(str);
+      target.set(encoded);
+      return {
+        read: encoded.length,
+        written: encoded.length,
+      };
+    }
+  };
+}
+
 // Redirect to React.act from react-dom/test-utils.act
 jest.mock('react-dom/test-utils', () => {
   const original = jest.requireActual('react-dom/test-utils');
