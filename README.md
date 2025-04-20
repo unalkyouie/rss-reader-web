@@ -1,56 +1,109 @@
-# rss-reader-web
+# 📰 RSS Reader Web
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This is a simple RSS Reader app built with React and Vite, designed to explore the basics of managing and displaying RSS feeds. The app includes essential features like adding feeds, viewing articles, and saving feed settings locally.
 
-This is a simple RSS Reader app built with React, designed to explore the basics of managing and displaying RSS feeds. The app includes essential features like adding feeds, viewing articles and saving feed settings locally. 
+---
 
+## 🚀 Features
 
-## Features
+- **Add/Edit Feeds**: Users can add or modify RSS feed URLs.
+- **Article List**: Displays articles sorted by publication date.
+- **Article View**: Allows users to view individual articles in detail.
+- **Feed Filtering**: Users can filter articles by feed.
+- **Persistent Settings**: Feed settings are saved locally via LocalStorage.
 
-- **Add/Edit Feeds**: Users can add or modify RSS feed URLs. 
-- **Article List**: Displays articles sorted by the publication date. 
-- **Article View**: Allows users to view individual articles in detail. 
-- **Feed Filtering**: Users can filter articles by feed. 
-- **Persistent Settings**: Feed settings are saved locally to persist even after a page refresh. 
-
-### Optional Features:
+### 🔧 Optional Features
 
 - **Search by Title**: Find articles by their title.
-- **Unread Marking & Filtering**: Mark Articles as unread and filter them accordingly. 
+- **Unread Marking & Filtering**: Mark articles as read and filter unread ones.
 - **Save for Later**: Add articles to a "Read Later" or "Favorites" list.
 
-## Tech stack: 
+---
+
+## 🛠️ Tech Stack
+
 - **React**
+- **Vite**
+- **TypeScript**
 - **LocalStorage**
-- **RSS Parser**
+- **RSS Parser (AllOrigins proxy to bypass CORS)**
 
-## Getting started 
+---
 
-### 1. Clone the repository
+## 🧪 Getting Started
+
+### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/unalkyouie/rss-reader-web-git
+git clone https://github.com/unalkyouie/rss-reader-web
 ```
 
-### 2. Install dependencies
+### 2. Install Dependencies
 
 ```bash
 cd rss-reader-web
-npm install
+yarn install
 ```
 
-### 3. Start the development server
+### 3. Run the Development Server
 
 ```bash
-npm start
+yarn dev
 ```
 
-The app will now be running at http://localhost:3000
+The app should now be running at: [http://localhost:5173](http://localhost:5173)
 
-### 4.Deploy
+---
 
-To deploy the app, you can use platforms like Vercel or any other suitable platform 
+## 🌍 Deployment Instructions
 
-## License
+### Option A: Deploy to **Vercel**
 
-This project is open source and available under MIT License. 
+1. Push your repository to GitHub
+2. Go to [https://vercel.com](https://vercel.com) and import your repo
+3. Select **Vite** as your framework
+4. Set build command to:
+   ```bash
+   yarn build
+   ```
+5. Set output directory to:
+   ```bash
+   dist
+   ```
+6. Click **Deploy**
+
+### Option B: Deploy with **GitHub Pages**
+
+1. Run production build:
+   ```bash
+   yarn build
+   ```
+2. Install `gh-pages` if needed:
+   ```bash
+   yarn add gh-pages -D
+   ```
+3. Add this to your `package.json`:
+   ```json
+   "homepage": "https://<your-username>.github.io/<your-repo>"
+   ```
+4. Add scripts:
+   ```json
+   "scripts": {
+     "predeploy": "yarn build",
+     "deploy": "gh-pages -d dist"
+   }
+   ```
+5. Run:
+   ```bash
+   yarn deploy
+   ```
+
+---
+
+## 📜 License
+
+This project is open source and available under the MIT License.
+
+---
+
+Made with ☕ and curiosity ✨

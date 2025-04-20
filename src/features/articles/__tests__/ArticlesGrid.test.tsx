@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, fireEvent, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import { mockArticles } from '../../../../__mocks__';
@@ -15,6 +15,10 @@ describe('ArticlesGrid', () => {
     );
   };
 
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
   it('renders all articles with title and description', () => {
     renderWithRouter(typedMockArticles);
 
@@ -29,26 +33,25 @@ describe('ArticlesGrid', () => {
     });
   });
 
-  it('renders a "Read more" link for each article with a link, pointing to the correct route', () => {
+  it('marks an article as read and stores it in localStorage on click', () => {
+    renderWithRouter(typedMockArticles);
+    const firstArticle = typedMockArticles[0];
+
+    const articleEl = screen.getByTestId(`article-item-${firstArticle.id}`);
+    const button = within(articleEl).getByRole('button', { name: /read more/i });
+    fireEvent.click(button);
+
+    const stored = JSON.parse(localStorage.getItem('readArticles') || '[]');
+    expect(stored).toContain(firstArticle.id);
+  });
+
+  it('applies the "read" class to read articles', () => {
+    const firstArticle = typedMockArticles[0];
+    localStorage.setItem('readArticles', JSON.stringify([firstArticle.id]));
+
     renderWithRouter(typedMockArticles);
 
-    typedMockArticles.forEach((article, index) => {
-      let articleItem: HTMLElement | null = null;
-      if (article.title) {
-        const titleElement = screen.getByText(new RegExp(article.title, 'i'));
-        articleItem = titleElement.closest('.article-item');
-      } else {
-        articleItem = screen.getByTestId(`article-item-${article.id || index}`);
-      }
-
-      expect(articleItem).toBeInTheDocument();
-
-      const readMoreLink = within(articleItem as HTMLElement).getByRole('link', {
-        name: /read more/i,
-      });
-
-      expect(readMoreLink).toBeInTheDocument();
-      expect(readMoreLink).toHaveAttribute('href', `/articles/${article.id}`);
-    });
+    const articleEl = screen.getByTestId(`article-item-${firstArticle.id}`);
+    expect(articleEl).toHaveClass('read');
   });
 });

@@ -1,25 +1,43 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import FeedSidebar from '../FeedSidebar';
+import { MemoryRouter } from 'react-router-dom';
+import FeedSidebar from '~/features/feeds/FeedSidebar';
+import { Feed } from '~/types/global';
 
-jest.mock('~/hooks/usePersistedFeeds', () => ({
-  default: () => ({
-    feeds: [{ name: 'Test Feed', url: 'https://example.com/feed' }],
-    addFeed: jest.fn(),
-  }),
-  __esModule: true,
-}));
+jest.mock('~/hooks/usePersistedFeeds', () => {
+  const mockFeeds: Feed[] = [
+    { name: 'Feed One', url: 'https://one.com/rss' },
+    { name: 'Feed Two', url: 'https://two.com/rss' },
+  ];
+  return {
+    __esModule: true,
+    default: () => ({
+      feeds: mockFeeds,
+      addFeed: jest.fn(),
+      removeFeed: jest.fn(),
+      updateFeed: jest.fn(),
+      getFeedByUrl: jest.fn(),
+    }),
+  };
+});
 
 describe('FeedSidebar', () => {
-  it('renders feed list and toggle button', () => {
-    render(<FeedSidebar selectedFeed="https://example.com/feed" onSelectFeed={() => {}} />);
-    expect(screen.getByText('Your feeds')).toBeInTheDocument();
-    expect(screen.getByText('Add new feed')).toBeInTheDocument();
-  });
+  it('renders feeds and toggles unread filter', () => {
+    const toggleUnread = jest.fn();
+    render(
+      <MemoryRouter>
+        <FeedSidebar
+          selectedFeed="https://one.com/rss"
+          onSelectFeed={jest.fn()}
+          showUnreadOnly={false}
+          onToggleUnread={toggleUnread}
+        />
+      </MemoryRouter>,
+    );
 
-  it('toggles feed form', () => {
-    render(<FeedSidebar selectedFeed="https://example.com/feed" onSelectFeed={() => {}} />);
-    const toggleButton = screen.getByText('Add new feed');
-    fireEvent.click(toggleButton);
-    expect(toggleButton).toHaveTextContent('Cancel');
+    expect(screen.getByText('Your feeds')).toBeInTheDocument();
+    expect(screen.getByText('Feed One')).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /show unread/i }));
+    expect(toggleUnread).toHaveBeenCalled();
   });
 });

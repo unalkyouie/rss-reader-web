@@ -40,10 +40,11 @@
   - Stable fetching from feed URLs
   - Handles errors from broken feeds
 
-- `ArticlesList`:
+- `ArticlesGrid`:
   - Sorted by **newest first**
   - Uses `formatDate()` for clean timestamp formatting
   - Fully responsive layout
+  - 🆕 Visually marks **read** articles using localStorage-based state
 
 ---
 
@@ -54,6 +55,8 @@
 - Responsive **grid layout** for articles
 - **Dark/light mode** theming toggle
 - Smooth **loading states** across views
+- 🆕 Collapsible form for adding feeds with animation
+- 🆕 Glassmorphism & spacing tweaks for sidebar and layout
 
 ### 🧼 Code Quality
 
@@ -75,7 +78,8 @@
 
 - `usePersistedFeeds`: Add/remove logic, LocalStorage sync
 - `FeedForm`: Input handling, validation, edge cases
-- `ArticlesList`: Sorting, date formatting, fallback states
+- `ArticlesGrid`: Sorting, date formatting, fallback states
+- 🆕 `MainView`: Integration of feed management + articles + read tracking
 
 ---
 
@@ -92,6 +96,9 @@
 - **State Management**  
   _"LocalStorage persistence just works now – no surprise data loss."_
 
+- 🆕 **Read Article Memory**  
+  _"Articles you've already clicked? Marked and remembered locally. Chef's kiss."_
+
 ---
 
 ### 😤 Pain Points
@@ -100,6 +107,7 @@
 - CORS issues on raw RSS URLs
 - TypeScript types for parsed feed objects are messy
 - Making UI responsive across screen sizes is fiddly
+- 🆕 Finding clean way to track & style read articles across views
 
 ---
 
@@ -132,5 +140,5 @@
 - ⏱ Add **feed refresh scheduling**
 - ❗ Implement proper **error states**
 - 📦 Build **PWA capabilities**
-- 📤 Enable **shared 'read later' lists**
 - 🧩 Update automatically via Git hooks
+- 🆕 Filter to show **only unread** articles

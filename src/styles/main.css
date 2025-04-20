@@ -166,6 +166,12 @@ button:disabled {
   color: #555;
 }
 
+.article-item.read {
+  opacity: 0.5;
+  filter: grayscale(0.8);
+  transition: all 0.3s ease;
+}
+
 /* Feed Header Card */
 .feed-header-card {
   background: linear-gradient(135deg, #f0f4f8, #ffffff);
