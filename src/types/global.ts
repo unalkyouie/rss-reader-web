@@ -11,6 +11,7 @@ export interface Article {
   link: string;
   pubDate: string;
   feedTitle?: string;
+  content?: string;
 }
 export type ArticlesList = Array<Article>;
 
