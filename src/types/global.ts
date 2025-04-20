@@ -4,20 +4,12 @@ export interface Feed {
   url: string;
 }
 
-export type FeedList = Array<Feed>;
-
 export interface Article {
-  title: string;
-  link: string;
-  pubDate: string;
-  feedTitle?: string;
-}
-export type ArticlesList = Array<Article>;
-
-export interface ParsedArticle {
+  id: string;
   title: string;
   link: string | null;
   pubDate: Date | null;
   feedTitle: string;
   description: string | null;
+  content: string | null;
 }

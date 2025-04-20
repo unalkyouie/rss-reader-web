@@ -117,12 +117,13 @@
 
 ### Progress Feel by Day
 
-| Day | Mood | Notes                       |
-| --- | ---- | --------------------------- |
-| 1   | 😤   | Setup struggles             |
-| 2   | 🤯   | RSS format edge cases       |
-| 3   | 🤔   | Refactor decisions, testing |
-| 4   | 😌   | Working feed + articles 🎉  |
+| Day | Mood | Notes                                                               |
+| --- | ---- | ------------------------------------------------------------------- |
+| 1   | 😤   | Setup struggles                                                     |
+| 2   | 🤯   | RSS format edge cases                                               |
+| 3   | 🤔   | Refactor decisions, testing                                         |
+| 4   | 😌   | Working feed + articles 🎉                                          |
+| 5   | 😤   | Routing + Articles kinda working, not sure if I can display content |
 
 ---
 

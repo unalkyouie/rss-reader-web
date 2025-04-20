@@ -94,11 +94,13 @@ describe('useFeedArticles', () => {
     await waitFor(() => expect(result.current.loading).toBe(false));
     expect(result.current.articles.length).toBe(1);
     expect(result.current.articles[0]).toEqual({
+      id: btoa('https://example.com/1').replace(/=+$/, '').replace(/\//g, '_'),
       title: 'Article 1',
       link: 'https://example.com/1',
       pubDate: new Date('2023-01-01'),
       feedTitle: 'Test Feed',
       description: 'Test Description',
+      content: null,
     });
   });
 

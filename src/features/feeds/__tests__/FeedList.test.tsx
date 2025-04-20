@@ -1,12 +1,17 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import FeedList from '~/features/feeds/FeedList';
 import { mockFeeds } from '../../../../__mocks__';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('FeedList', () => {
   it('renders a list of feeds with clickable items', () => {
     const handleSelectFeed = jest.fn();
 
-    render(<FeedList feeds={mockFeeds} onSelectFeed={handleSelectFeed} />);
+    render(
+      <MemoryRouter>
+        <FeedList feeds={mockFeeds} onSelectFeed={handleSelectFeed} />
+      </MemoryRouter>,
+    );
 
     mockFeeds.forEach((feed) => {
       expect(screen.getByText(feed.name)).toBeInTheDocument();
@@ -20,7 +25,10 @@ describe('FeedList', () => {
     const selectedFeedUrl = mockFeeds[1].url;
 
     render(
-      <FeedList feeds={mockFeeds} onSelectFeed={() => {}} selectedFeedUrl={selectedFeedUrl} />,
+      <MemoryRouter>
+        {' '}
+        <FeedList feeds={mockFeeds} onSelectFeed={() => {}} selectedFeedUrl={selectedFeedUrl} />
+      </MemoryRouter>,
     );
 
     const selectedItem = screen.getByText(mockFeeds[1].name);
@@ -28,7 +36,11 @@ describe('FeedList', () => {
   });
 
   it('shows a message when there are no feeds', () => {
-    render(<FeedList feeds={[]} onSelectFeed={() => {}} />);
+    render(
+      <MemoryRouter>
+        <FeedList feeds={[]} onSelectFeed={() => {}} />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText('No feeds available')).toBeInTheDocument();
   });
