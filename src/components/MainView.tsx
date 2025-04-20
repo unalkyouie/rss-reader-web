@@ -1,13 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FeedList from '~/features/feeds/FeedList';
 import FeedForm from '~/features/feeds/FeedForm';
 import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import useFeedArticles from '~/hooks/useFeedArticles';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 
-const MainView: React.FC = () => {
-  const [selectedFeed, setSelectedFeed] = useState<string | null>(null);
-
+const MainView = () => {
+  const [selectedFeed, setSelectedFeed] = useState(() => {
+    return localStorage.getItem('selectedFeedUrl') || '';
+  });
   const { articles, error, loading } = useFeedArticles(selectedFeed || '');
   const { feeds, addFeed } = usePersistedFeeds();
 
@@ -17,7 +18,15 @@ const MainView: React.FC = () => {
 
   const handleSelectFeed = (url: string) => {
     setSelectedFeed(url);
+    localStorage.setItem('selectedFeedUrl', url);
   };
+
+  useEffect(() => {
+    if ((!selectedFeed || !feeds.find((f) => f.url === selectedFeed)) && feeds.length > 0) {
+      setSelectedFeed(feeds[0].url);
+      localStorage.setItem('selectedFeedUrl', feeds[0].url);
+    }
+  }, [feeds, selectedFeed]);
 
   return (
     <div className="main-feed-page">
