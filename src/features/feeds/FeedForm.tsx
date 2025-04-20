@@ -4,10 +4,9 @@ interface Props {
   onAddFeed: (feed: { name: string; url: string }) => void;
   initialData?: { name: string; url: string };
   isEdit?: boolean;
-  onCancel?: () => void;
 }
 
-const FeedForm = ({ onAddFeed, initialData, isEdit = false, onCancel }: Props) => {
+const FeedForm = ({ onAddFeed, initialData, isEdit = false }: Props) => {
   const [name, setName] = useState('');
   const [url, setUrl] = useState('');
 
@@ -50,11 +49,6 @@ const FeedForm = ({ onAddFeed, initialData, isEdit = false, onCancel }: Props) =
       </div>
       <div style={{ display: 'flex', gap: '8px' }}>
         <button type="submit">{isEdit ? 'Update Feed' : 'Add Feed'}</button>
-        {isEdit && onCancel && (
-          <button type="button" onClick={onCancel}>
-            Cancel
-          </button>
-        )}
       </div>
     </form>
   );

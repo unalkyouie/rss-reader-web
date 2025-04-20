@@ -1,28 +1,29 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import FeedForm from '../FeedForm';
-import { MemoryRouter } from 'react-router-dom';
+import { render, screen, fireEvent } from '@testing-library/react';
+import FeedForm from '~/features/feeds/FeedForm';
 
 describe('FeedForm', () => {
-  it('calls onAddFeed with name and URL when form is submitted', async () => {
-    const onAddFeed = jest.fn();
+  it('submits updated feed when editing', () => {
+    const handleUpdate = jest.fn();
+
     render(
-      <MemoryRouter>
-        <FeedForm onAddFeed={onAddFeed} />
-      </MemoryRouter>,
+      <FeedForm
+        onAddFeed={handleUpdate}
+        initialData={{ name: 'Test Feed', url: 'https://test.com' }}
+        isEdit
+      />,
     );
 
-    const nameInput = screen.getByPlaceholderText('e.g. TechCrunch');
-    const urlInput = screen.getByPlaceholderText('https://example.com/rss');
-    const button = screen.getByRole('button', { name: /add feed/i });
+    const nameInput = screen.getByLabelText(/feed name/i);
+    const urlInput = screen.getByLabelText(/feed url/i);
+    const submit = screen.getByRole('button', { name: /update feed/i });
 
-    await userEvent.type(nameInput, 'New Feed');
-    await userEvent.type(urlInput, 'https://new-feed.com/rss');
-    await userEvent.click(button);
+    fireEvent.change(nameInput, { target: { value: 'Updated Feed' } });
+    fireEvent.change(urlInput, { target: { value: 'https://updated.com' } });
+    fireEvent.click(submit);
 
-    expect(onAddFeed).toHaveBeenCalledWith({
-      name: 'New Feed',
-      url: 'https://new-feed.com/rss',
+    expect(handleUpdate).toHaveBeenCalledWith({
+      name: 'Updated Feed',
+      url: 'https://updated.com',
     });
   });
 });

@@ -3,57 +3,41 @@ import { MemoryRouter } from 'react-router-dom';
 import FeedSidebar from '~/features/feeds/FeedSidebar';
 import { Feed } from '~/types/global';
 
-jest.mock('~/hooks/usePersistedFeeds', () => ({
-  __esModule: true,
-  default: () => ({
-    feeds: [
-      { name: 'Feed One', url: 'https://example.com/rss' },
-      { name: 'Feed Two', url: 'https://example.org/rss' },
-    ],
-    addFeed: jest.fn(),
-    removeFeed: jest.fn(),
-    updateFeed: jest.fn(),
-    getFeedByUrl: jest.fn(),
-  }),
-}));
-const mockFeeds: Array<Feed> = [
-  { name: 'Feed One', url: 'https://example.com/rss' },
-  { name: 'Feed Two', url: 'https://example.org/rss' },
-];
+jest.mock('~/hooks/usePersistedFeeds', () => {
+  const mockFeeds: Feed[] = [
+    { name: 'Feed One', url: 'https://one.com/rss' },
+    { name: 'Feed Two', url: 'https://two.com/rss' },
+  ];
+  return {
+    __esModule: true,
+    default: () => ({
+      feeds: mockFeeds,
+      addFeed: jest.fn(),
+      removeFeed: jest.fn(),
+      updateFeed: jest.fn(),
+      getFeedByUrl: jest.fn(),
+    }),
+  };
+});
 
 describe('FeedSidebar', () => {
-  it('renders the list of feeds', () => {
+  it('renders feeds and toggles unread filter', () => {
+    const toggleUnread = jest.fn();
     render(
       <MemoryRouter>
         <FeedSidebar
-          selectedFeed={mockFeeds[0].url}
+          selectedFeed="https://one.com/rss"
           onSelectFeed={jest.fn()}
           showUnreadOnly={false}
-          onToggleUnread={jest.fn()}
+          onToggleUnread={toggleUnread}
         />
       </MemoryRouter>,
     );
+
     expect(screen.getByText('Your feeds')).toBeInTheDocument();
-    mockFeeds.forEach((feed) => {
-      expect(screen.getByText(feed.name)).toBeInTheDocument();
-    });
-  });
+    expect(screen.getByText('Feed One')).toBeInTheDocument();
 
-  it('calls onToggleUnread when the toggle button is clicked', () => {
-    const toggleFn = jest.fn();
-    render(
-      <MemoryRouter>
-        <FeedSidebar
-          selectedFeed={mockFeeds[0].url}
-          onSelectFeed={jest.fn()}
-          showUnreadOnly={true}
-          onToggleUnread={toggleFn}
-        />
-      </MemoryRouter>,
-    );
-    const toggleButton = screen.getByRole('button', { name: /show all/i });
-    fireEvent.click(toggleButton);
-
-    expect(toggleFn).toHaveBeenCalled();
+    fireEvent.click(screen.getByRole('button', { name: /show unread/i }));
+    expect(toggleUnread).toHaveBeenCalled();
   });
 });

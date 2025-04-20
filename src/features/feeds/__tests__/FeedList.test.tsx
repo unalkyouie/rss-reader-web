@@ -1,47 +1,41 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import FeedList from '~/features/feeds/FeedList';
-import { mockFeeds } from '../../../../__mocks__';
-import { MemoryRouter } from 'react-router-dom';
+
+jest.mock('~/hooks/usePersistedFeeds', () => ({
+  __esModule: true,
+  default: () => ({
+    feeds: [
+      { name: 'Feed One', url: 'https://example.com/rss' },
+      { name: 'Feed Two', url: 'https://example.org/rss' },
+    ],
+    removeFeed: jest.fn(),
+    updateFeed: jest.fn(),
+  }),
+}));
 
 describe('FeedList', () => {
-  it('renders a list of feeds with clickable items', () => {
-    const handleSelectFeed = jest.fn();
+  it('shows edit form when clicking edit and cancels edit', () => {
+    render(<FeedList selectedFeed="https://example.com/rss" onSelectFeed={jest.fn()} />);
 
-    render(
-      <MemoryRouter>
-        <FeedList feeds={mockFeeds} onSelectFeed={handleSelectFeed} />
-      </MemoryRouter>,
-    );
+    const editBtn = screen.getAllByLabelText(/edit feed/i)[0];
+    fireEvent.click(editBtn);
 
-    mockFeeds.forEach((feed) => {
-      expect(screen.getByText(feed.name)).toBeInTheDocument();
-    });
+    expect(screen.getByDisplayValue('Feed One')).toBeInTheDocument();
 
-    fireEvent.click(screen.getByText(mockFeeds[0].name));
-    expect(handleSelectFeed).toHaveBeenCalledWith(mockFeeds[0].url);
+    const cancelBtn = screen.getByLabelText(/cancel edit/i);
+    fireEvent.click(cancelBtn);
+
+    expect(screen.queryByDisplayValue('Feed One')).not.toBeInTheDocument();
   });
 
-  it('applies selected class to the selected feed item', () => {
-    const selectedFeedUrl = mockFeeds[1].url;
+  it('asks for confirmation on delete', () => {
+    window.confirm = jest.fn(() => true);
 
-    render(
-      <MemoryRouter>
-        {' '}
-        <FeedList feeds={mockFeeds} onSelectFeed={() => {}} selectedFeedUrl={selectedFeedUrl} />
-      </MemoryRouter>,
-    );
+    render(<FeedList selectedFeed="https://example.com/rss" onSelectFeed={jest.fn()} />);
 
-    const selectedItem = screen.getByText(mockFeeds[1].name);
-    expect(selectedItem.className).toMatch(/selected/);
-  });
+    const deleteBtn = screen.getAllByLabelText(/delete feed/i)[0];
+    fireEvent.click(deleteBtn);
 
-  it('shows a message when there are no feeds', () => {
-    render(
-      <MemoryRouter>
-        <FeedList feeds={[]} onSelectFeed={() => {}} />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText('No feeds available')).toBeInTheDocument();
+    expect(window.confirm).toHaveBeenCalled();
   });
 });
