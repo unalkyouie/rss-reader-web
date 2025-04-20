@@ -2,11 +2,16 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FeedForm from '../FeedForm';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('FeedForm', () => {
   it('calls onAddFeed with name and URL when form is submitted', async () => {
     const onAddFeed = jest.fn();
-    render(<FeedForm onAddFeed={onAddFeed} />);
+    render(
+      <MemoryRouter>
+        <FeedForm onAddFeed={onAddFeed} />
+      </MemoryRouter>,
+    );
 
     const nameInput = screen.getByPlaceholderText('e.g. TechCrunch');
     const urlInput = screen.getByPlaceholderText('https://example.com/rss');

@@ -1,36 +1,54 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import { mockArticles } from '../../../../__mocks__';
+import { Article } from '~/types/global';
+
+const typedMockArticles: Array<Article & { id?: string | number }> = mockArticles;
 
 describe('ArticlesGrid', () => {
-  it('renders all articles with title and description', () => {
-    render(<ArticlesGrid articles={mockArticles} />);
+  const renderWithRouter = (articles: Array<Article & { id?: string | number }>) => {
+    return render(
+      <MemoryRouter>
+        <ArticlesGrid articles={articles} />
+      </MemoryRouter>,
+    );
+  };
 
-    mockArticles.forEach((article) => {
+  it('renders all articles with title and description', () => {
+    renderWithRouter(typedMockArticles);
+
+    typedMockArticles.forEach((article) => {
       if (article.title) {
-        expect(screen.getByText(article.title)).toBeInTheDocument();
+        expect(screen.getByText(new RegExp(article.title, 'i'))).toBeInTheDocument();
       }
 
       if (article.description) {
-        expect(screen.getByText(article.description)).toBeInTheDocument();
+        expect(screen.getByText(new RegExp(article.description, 'i'))).toBeInTheDocument();
       }
     });
   });
 
-  it('renders article titles as links when link is available', () => {
-    render(<ArticlesGrid articles={mockArticles} />);
+  it('renders a "Read more" link for each article with a link, pointing to the correct route', () => {
+    renderWithRouter(typedMockArticles);
 
-    mockArticles.forEach((article) => {
+    typedMockArticles.forEach((article, index) => {
+      let articleItem: HTMLElement | null = null;
       if (article.title) {
-        const titleEl = screen.getByText(article.title);
-        const link = titleEl.closest('a');
-
-        if (article.link) {
-          expect(link).toHaveAttribute('href', article.link);
-        } else {
-          expect(link).toBeNull();
-        }
+        const titleElement = screen.getByText(new RegExp(article.title, 'i'));
+        articleItem = titleElement.closest('.article-item');
+      } else {
+        articleItem = screen.getByTestId(`article-item-${article.id || index}`);
       }
+
+      expect(articleItem).toBeInTheDocument();
+
+      const readMoreLink = within(articleItem as HTMLElement).getByRole('link', {
+        name: /read more/i,
+      });
+
+      expect(readMoreLink).toBeInTheDocument();
+      expect(readMoreLink).toHaveAttribute('href', `/articles/${article.id}`);
     });
   });
 });

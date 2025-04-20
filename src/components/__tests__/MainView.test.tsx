@@ -2,6 +2,7 @@ import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 import useFeedArticles from '~/hooks/useFeedArticles';
 import MainView from '~/components/MainView';
+import { MemoryRouter } from 'react-router-dom';
 
 jest.mock('~/hooks/usePersistedFeeds');
 jest.mock('~/hooks/useFeedArticles');
@@ -33,7 +34,11 @@ describe('MainView', () => {
   });
 
   it('renders the main view with the feed list and articles', () => {
-    render(<MainView />);
+    render(
+      <MemoryRouter>
+        <MainView />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText('BBC News')).toBeInTheDocument();
 
@@ -41,7 +46,11 @@ describe('MainView', () => {
   });
 
   it('selects a feed and updates the articles', async () => {
-    render(<MainView />);
+    render(
+      <MemoryRouter>
+        <MainView />
+      </MemoryRouter>,
+    );
 
     fireEvent.click(screen.getByText('BBC News'));
 
@@ -51,7 +60,11 @@ describe('MainView', () => {
   });
 
   it('adds a new feed and updates the feed list', () => {
-    render(<MainView />);
+    render(
+      <MemoryRouter>
+        <MainView />
+      </MemoryRouter>,
+    );
 
     const addFeedButton = screen.getByText('Add Feed');
     fireEvent.click(addFeedButton);
@@ -66,7 +79,11 @@ describe('MainView', () => {
       error: null,
     });
 
-    render(<MainView />);
+    render(
+      <MemoryRouter>
+        <MainView />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText('Loading articles...')).toBeInTheDocument();
   });
@@ -78,7 +95,11 @@ describe('MainView', () => {
       error: 'Error loading articles',
     });
 
-    render(<MainView />);
+    render(
+      <MemoryRouter>
+        <MainView />
+      </MemoryRouter>,
+    );
 
     expect(screen.getByText('Error loading articles: Error loading articles')).toBeInTheDocument();
   });

@@ -1,35 +1,43 @@
-import { render } from '@testing-library/react';
-import ArticleDetail from '~/features/articles/ArticleDetail';
-import { Article } from '~/types/global';
+import { render, screen, waitFor, act } from '@testing-library/react';
+import { mockArticles } from '../../../../__mocks__';
+import { MemoryRouter, Routes, Route } from 'react-router-dom';
+import ArticleDetail from '~/features/articles/ArticleDetails';
 
 describe('ArticleDetail', () => {
-  const mockArticle: Article = {
-    title: 'Test Article',
-    link: 'https://example.com',
-    pubDate: '2025-04-20T12:00:00Z',
-    content: 'This is the content of the test article.',
-  };
+  it('renders the article details when an article is found in localStorage', async () => {
+    localStorage.setItem('articles', JSON.stringify([mockArticles[0]]));
 
-  it('renders article details correctly', () => {
-    const { getByText, getByRole } = render(<ArticleDetail article={mockArticle} />);
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={[`/articles/${mockArticles[0].id}`]}>
+          <Routes>
+            <Route path="/articles/:id" element={<ArticleDetail />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+    });
 
-    expect(getByText('Test Article')).toBeInTheDocument();
-    expect(getByText('This is the content of the test article.')).toBeInTheDocument();
-    expect(getByText('April 20, 2025 at 2:00:00 PM')).toBeInTheDocument();
-    expect(getByRole('link')).toHaveAttribute('href', 'https://example.com');
+    await waitFor(() => screen.getByText(mockArticles[0].title));
+
+    expect(screen.getByText(mockArticles[0].title)).toBeInTheDocument();
+    expect(screen.getByText(mockArticles[0].content || 'No content available')).toBeInTheDocument();
   });
 
-  it('renders "No content available" if no content is provided', () => {
-    const articleWithoutContent = { ...mockArticle, content: undefined };
+  it('shows "Article not found" when article is not found in localStorage', async () => {
+    localStorage.setItem('articles', JSON.stringify([]));
 
-    const { getByText } = render(<ArticleDetail article={articleWithoutContent} />);
+    await act(async () => {
+      render(
+        <MemoryRouter initialEntries={['/articles/nonexistent-article']}>
+          <Routes>
+            <Route path="/articles/:id" element={<ArticleDetail />} />
+          </Routes>
+        </MemoryRouter>,
+      );
+    });
 
-    expect(getByText('No content available')).toBeInTheDocument();
-  });
+    await waitFor(() => screen.getByText('Article not found'));
 
-  it('renders "Article not found" when no article is passed', () => {
-    const { getByText } = render(<ArticleDetail article={null} />);
-
-    expect(getByText('Article not found')).toBeInTheDocument();
+    expect(screen.getByText('Article not found')).toBeInTheDocument();
   });
 });

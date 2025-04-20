@@ -1,9 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { parseFeed } from '@rowanmanning/feed-parser';
 import { FeedItem } from '@rowanmanning/feed-parser/lib/feed/item/base';
-import { ParsedArticle } from '~/types/global';
+import { Article } from '~/types/global';
 
-const fetchFeedArticles = async (url: string): Promise<ParsedArticle[]> => {
+const fetchFeedArticles = async (url: string): Promise<Article[]> => {
   const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
   const response = await fetch(proxyUrl);
   if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
@@ -12,13 +12,19 @@ const fetchFeedArticles = async (url: string): Promise<ParsedArticle[]> => {
   const xml = result.contents;
   const feed = await parseFeed(xml);
 
-  return feed.items.map((item: FeedItem) => ({
-    title: item.title || 'No title',
-    link: item.url,
-    pubDate: item.published,
-    feedTitle: feed.title || 'No title',
-    description: feed.description,
-  }));
+  return feed.items.map((item: FeedItem, index: number) => {
+    const link = item.url || `no-link-${index}`;
+    const id = btoa(link).replace(/=+$/, '').replace(/\//g, '_');
+    return {
+      id,
+      title: item.title || 'No title',
+      link: item.url,
+      pubDate: item.published ? item.published : null,
+      feedTitle: feed.title || 'No title',
+      description: feed.description || null,
+      content: item.content || null,
+    };
+  });
 };
 
 const useFeedArticles = (url: string) => {

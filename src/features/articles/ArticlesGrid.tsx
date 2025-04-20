@@ -1,29 +1,25 @@
 import React from 'react';
-import { ParsedArticle } from '~/types/global';
+import { Link } from 'react-router-dom';
+import { Article } from '~/types/global';
 
-const ArticlesGrid = ({ articles }: { articles: Array<ParsedArticle> }) => {
+interface Props {
+  articles: Array<Article>;
+}
+
+const ArticlesGrid = ({ articles }: Props) => {
+  localStorage.setItem('articles', JSON.stringify(articles));
+
   return (
-    <div className="articles-grid">
-      {articles.map((article, index) => (
-        <div className="article-item" key={index}>
-          {article.link ? (
-            <a
-              href={article.link}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="article-link"
-            >
-              <h3>{article.title}</h3>
-              <p>{article.description}</p>
-            </a>
-          ) : (
-            <div className="article-link">
-              <h3>{article.title}</h3>
-              <p>{article.description}</p>
-            </div>
-          )}
-        </div>
-      ))}
+    <div className="articles-grid" data-testid="articles-grid">
+      {articles.map((article) => {
+        return (
+          <div key={article.id} className="article-item" data-testid={`article-item-${article.id}`}>
+            {article.title && <h2>{article.title}</h2>}
+            {article.description && <p>{article.description}</p>}
+            <Link to={`/articles/${article.id}`}>Read more</Link>
+          </div>
+        );
+      })}
     </div>
   );
 };
