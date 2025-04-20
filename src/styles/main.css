@@ -1,3 +1,4 @@
+/* Global Styles */
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, #dfe9f3, #ffffff);
@@ -166,6 +167,7 @@ button:disabled {
   }
 }
 
+/* Error Notification */
 .error {
   color: #c0392b;
   background: #ffe2e2;

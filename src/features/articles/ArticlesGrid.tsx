@@ -11,9 +11,13 @@ const ArticlesGrid = ({ articles }: Props) => {
 
   return (
     <div className="articles-grid" data-testid="articles-grid">
-      {articles.map((article) => {
+      {articles.map((article, index) => {
         return (
-          <div key={article.id} className="article-item" data-testid={`article-item-${article.id}`}>
+          <div
+            key={article.id || index}
+            className="article-item"
+            data-testid={`article-item-${article.id}`}
+          >
             {article.title && <h2>{article.title}</h2>}
             {article.description && <p>{article.description}</p>}
             <Link to={`/articles/${article.id}`}>Read more</Link>

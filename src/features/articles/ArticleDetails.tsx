@@ -12,20 +12,16 @@ const ArticleDetails = () => {
   }
 
   return (
-    <div className="article-detail-container">
-      <h1 className="article-title">{article.title}</h1>
+    <div className="article-details">
+      <h1>{article.title}</h1>
+      {article.description && <p className="description">{article.description}</p>}
       {article.content ? (
-        <p className="article-content">{article.content}</p>
+        <div className="article-content" dangerouslySetInnerHTML={{ __html: article.content }} />
       ) : (
         <div className="no-content">
-          <p className="article-description">{article.description || 'No description available'}</p>
-          <a
-            className="read-more-link"
-            href={article.link}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read more on the official website
+          <p>This article has no content available.</p>
+          <a href={article.link} target="_blank" rel="noopener noreferrer">
+            Read more on the official website →
           </a>
         </div>
       )}
