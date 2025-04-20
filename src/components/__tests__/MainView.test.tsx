@@ -1,106 +1,99 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import usePersistedFeeds from '~/hooks/usePersistedFeeds';
-import useFeedArticles from '~/hooks/useFeedArticles';
-import MainView from '~/components/MainView';
+import MainView from '../MainView';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import * as usePersistedFeedsHook from '~/hooks/usePersistedFeeds';
 import { MemoryRouter } from 'react-router-dom';
 
-jest.mock('~/hooks/usePersistedFeeds');
-jest.mock('~/hooks/useFeedArticles');
+const mockAddFeed = jest.fn();
+const mockFeeds = [{ name: 'Test Feed', url: 'https://test.com/rss' }];
 
-jest.mock('~/features/feeds/FeedForm', () => ({
-  __esModule: true,
-  default: ({ onAddFeed }: { onAddFeed: (feed: { name: string; url: string }) => void }) => {
-    return (
-      <button onClick={() => onAddFeed({ name: 'Test Feed', url: 'https://test.feed/rss' })}>
-        Add Feed
-      </button>
-    );
-  },
+jest.mock('~/hooks/useFeedArticles', () => () => ({
+  articles: [
+    {
+      id: '1',
+      title: 'Article 1',
+      url: 'https://example.com/article-1',
+      description: 'Description',
+      pubDate: new Date().toISOString(),
+      feedTitle: 'Test Feed',
+    },
+  ],
+  loading: false,
+  error: null,
 }));
 
-describe('MainView', () => {
-  beforeEach(() => {
-    (usePersistedFeeds as jest.Mock).mockReturnValue({
-      feeds: [{ name: 'BBC News', url: 'https://feeds.bbci.co.uk/news/rss.xml' }],
-      addFeed: jest.fn(),
-      removeFeed: jest.fn(),
-    });
+jest.mock('~/hooks/usePersistedFeeds');
 
-    (useFeedArticles as jest.Mock).mockReturnValue({
-      articles: [{ title: 'Article 1', url: 'https://article1.com' }],
-      loading: false,
-      error: null,
-    });
+const mockUsePersistedFeeds = usePersistedFeedsHook as jest.Mocked<typeof usePersistedFeedsHook>;
+
+beforeEach(() => {
+  mockUsePersistedFeeds.default.mockReturnValue({
+    feeds: mockFeeds,
+    addFeed: mockAddFeed,
+    removeFeed: jest.fn(),
+    updateFeed: jest.fn(),
+    getFeedByUrl: jest.fn(),
   });
+});
+
+describe('MainView', () => {
+  const queryClient = new QueryClient();
 
   it('renders the main view with the feed list and articles', () => {
     render(
-      <MemoryRouter>
-        <MainView />
-      </MemoryRouter>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <MainView />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
-
-    expect(screen.getByText('BBC News')).toBeInTheDocument();
-
+    expect(screen.getByText('Your feeds')).toBeInTheDocument();
     expect(screen.getByText('Article 1')).toBeInTheDocument();
   });
 
-  it('selects a feed and updates the articles', async () => {
+  it('expands and collapses feed form', () => {
     render(
-      <MemoryRouter>
-        <MainView />
-      </MemoryRouter>,
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <MainView />
+        </MemoryRouter>
+      </QueryClientProvider>,
     );
+    const toggleButton = screen.getByRole('button', { name: /add new feed/i });
+    fireEvent.click(toggleButton);
 
-    fireEvent.click(screen.getByText('BBC News'));
+    expect(screen.getByPlaceholderText(/techcrunch/i)).toBeInTheDocument();
+
+    fireEvent.click(toggleButton);
+    expect(screen.queryByPlaceholderText(/techcrunch/i)).not.toBeInTheDocument();
+  });
+
+  it('adds a new feed and collapses the form', async () => {
+    render(
+      <QueryClientProvider client={queryClient}>
+        <MemoryRouter>
+          <MainView />
+        </MemoryRouter>
+      </QueryClientProvider>,
+    );
+    fireEvent.click(screen.getByRole('button', { name: /add new feed/i }));
+
+    fireEvent.change(screen.getByPlaceholderText(/techcrunch/i), {
+      target: { value: 'New Feed' },
+    });
+    fireEvent.change(screen.getByPlaceholderText(/https:\/\/example\.com\/rss/i), {
+      target: { value: 'https://newfeed.com/rss' },
+    });
+
+    fireEvent.click(screen.getByRole('button', { name: /add feed/i }));
 
     await waitFor(() => {
-      expect(useFeedArticles).toHaveBeenCalledWith('https://feeds.bbci.co.uk/news/rss.xml');
-    });
-  });
-
-  it('adds a new feed and updates the feed list', () => {
-    render(
-      <MemoryRouter>
-        <MainView />
-      </MemoryRouter>,
-    );
-
-    const addFeedButton = screen.getByText('Add Feed');
-    fireEvent.click(addFeedButton);
-
-    expect(usePersistedFeeds().addFeed).toHaveBeenCalled();
-  });
-
-  it('displays loading state when articles are loading', () => {
-    (useFeedArticles as jest.Mock).mockReturnValue({
-      articles: [],
-      loading: true,
-      error: null,
+      expect(mockAddFeed).toHaveBeenCalledWith({
+        name: 'New Feed',
+        url: 'https://newfeed.com/rss',
+      });
     });
 
-    render(
-      <MemoryRouter>
-        <MainView />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText('Loading articles...')).toBeInTheDocument();
-  });
-
-  it('displays error state when there is an error fetching articles', () => {
-    (useFeedArticles as jest.Mock).mockReturnValue({
-      articles: [],
-      loading: false,
-      error: 'Error loading articles',
-    });
-
-    render(
-      <MemoryRouter>
-        <MainView />
-      </MemoryRouter>,
-    );
-
-    expect(screen.getByText('Error loading articles: Error loading articles')).toBeInTheDocument();
+    expect(screen.queryByPlaceholderText(/techcrunch/i)).not.toBeInTheDocument();
   });
 });

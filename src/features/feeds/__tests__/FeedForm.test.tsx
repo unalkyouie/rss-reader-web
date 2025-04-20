@@ -1,4 +1,3 @@
-// src/features/feeds/__tests__/FeedForm.test.tsx
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import FeedForm from '../FeedForm';
