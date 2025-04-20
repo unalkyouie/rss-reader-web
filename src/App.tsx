@@ -13,7 +13,7 @@ const App: React.FC = () => {
       <Router>
         <Routes>
           <Route path="/" element={<MainView />} />
-          <Route path="/article/:id" element={<ArticleDetail />} />
+          <Route path="/articles/:id" element={<ArticleDetail />} />
         </Routes>
       </Router>
     </QueryClientProvider>

@@ -15,6 +15,7 @@ const fetchFeedArticles = async (url: string): Promise<Article[]> => {
   return feed.items.map((item: FeedItem, index: number) => {
     const link = item.url || `no-link-${index}`;
     const id = btoa(link).replace(/=+$/, '').replace(/\//g, '_');
+
     return {
       id,
       title: item.title || 'No title',
