@@ -4,7 +4,7 @@ import { saveToStorage, loadFromStorage } from '~/utils/storage';
 
 const FEEDS_KEY = 'savedFeeds';
 
-export const usePersistedFeeds = () => {
+const usePersistedFeeds = () => {
   const [feeds, setFeeds] = useState<Feed[]>(() => loadFromStorage(FEEDS_KEY, []));
 
   useEffect(() => {
@@ -32,3 +32,5 @@ export const usePersistedFeeds = () => {
 
   return { feeds, addFeed, removeFeed, updateFeed, getFeedByUrl };
 };
+
+export default usePersistedFeeds;
