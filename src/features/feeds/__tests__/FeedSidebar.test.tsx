@@ -40,4 +40,25 @@ describe('FeedSidebar', () => {
     fireEvent.click(screen.getByRole('button', { name: /show unread/i }));
     expect(toggleUnread).toHaveBeenCalled();
   });
+
+  it('renders "My Favorite Articles" as a virtual feed and triggers onSelectFeed', () => {
+    const onSelectFeed = jest.fn();
+
+    render(
+      <MemoryRouter>
+        <FeedSidebar
+          selectedFeed=""
+          onSelectFeed={onSelectFeed}
+          showUnreadOnly={false}
+          onToggleUnread={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
+
+    const favoriteItem = screen.getByText(/my favorite articles/i);
+    expect(favoriteItem).toBeInTheDocument();
+
+    fireEvent.click(favoriteItem);
+    expect(onSelectFeed).toHaveBeenCalledWith('__favorites__');
+  });
 });

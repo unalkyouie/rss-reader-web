@@ -3,6 +3,8 @@ import { parseFeed } from '@rowanmanning/feed-parser';
 import { FeedItem } from '@rowanmanning/feed-parser/lib/feed/item/base';
 import { Article } from '~/types/global';
 
+const sanitizeId = (input: string) => btoa(input).replace(/=+$/, '').replace(/\//g, '_');
+
 const fetchFeedArticles = async (url: string): Promise<Article[]> => {
   const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(url)}`;
   const response = await fetch(proxyUrl);
@@ -13,8 +15,8 @@ const fetchFeedArticles = async (url: string): Promise<Article[]> => {
   const feed = await parseFeed(xml);
 
   return feed.items.map((item: FeedItem, index: number) => {
-    const link = item.url || `no-link-${index}`;
-    const id = btoa(link).replace(/=+$/, '').replace(/\//g, '_');
+    const fallback = item.url || item.title || item.published || String(index);
+    const id = sanitizeId(fallback.toString());
 
     return {
       id,
@@ -32,7 +34,7 @@ const useFeedArticles = (url: string) => {
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ['feedArticles', url],
     queryFn: () => fetchFeedArticles(url),
-    enabled: !!url,
+    enabled: !!url && url !== '__favorites__',
     staleTime: 1000 * 60 * 5,
   });
 
