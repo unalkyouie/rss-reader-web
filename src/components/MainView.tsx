@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useState, useCallback } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import useFeedArticles from '~/hooks/useFeedArticles';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
@@ -7,13 +7,13 @@ import useFavorites from '~/hooks/useFavorites';
 
 const MainView = () => {
   const [selectedFeed, setSelectedFeed] = useState(
-    () => localStorage.getItem('selectedFeedUrl') || ''
+    () => localStorage.getItem('selectedFeedUrl') || '',
   );
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
 
   const isFavoritesFeed = selectedFeed === '__favorites__';
   const { feeds } = usePersistedFeeds();
-  const { favorites, isFavorite, toggleFavorite } = useFavorites();
+  const { favorites } = useFavorites();
   const { articles, error, loading } = useFeedArticles(isFavoritesFeed ? '' : selectedFeed);
 
   const readArticles = useMemo(() => {

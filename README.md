@@ -2,7 +2,7 @@
 
 This is a simple RSS Reader app built with React and Vite, designed to explore the basics of managing and displaying RSS feeds. The app includes essential features like adding feeds, viewing articles, and saving feed settings locally.
 
----
+## Page availble at: https://rss-reader-web.vercel.app/
 
 ## 🚀 Features
 

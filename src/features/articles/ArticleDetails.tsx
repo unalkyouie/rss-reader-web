@@ -1,11 +1,20 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
+import { useQueryClient } from '@tanstack/react-query';
 import { Article } from '~/types/global';
+import { sanitizeId } from '~/utils/sanitazeId';
 
 const ArticleDetails = () => {
   const { id } = useParams();
-  const articles = JSON.parse(localStorage.getItem('articles') || '[]');
-  const article = articles.find((a: Article) => a.id === id);
+  const queryClient = useQueryClient();
+
+  const allArticles: Article[] = queryClient
+    .getQueryCache()
+    .getAll()
+    .filter((q) => q.queryKey?.[0] === 'feedArticles')
+    .flatMap((q) => q.state.data || []) as Article[];
+
+  const article = allArticles.find((a) => sanitizeId(a.link || '') === id);
 
   if (!article) {
     return <div className="article-not-found">Article not found</div>;
@@ -20,9 +29,11 @@ const ArticleDetails = () => {
       ) : (
         <div className="no-content">
           <p>This article has no content available.</p>
-          <a href={article.link} target="_blank" rel="noopener noreferrer">
-            Read more on the official website →
-          </a>
+          {article.link && (
+            <a href={article.link} target="_blank" rel="noopener noreferrer">
+              Read more on the official website →
+            </a>
+          )}
         </div>
       )}
     </div>
