@@ -138,7 +138,6 @@
 ## 🔜 Next Steps
 
 - ⏱ Add **feed refresh scheduling**
-- ❗ Implement proper **error states**
-- 📦 Build **PWA capabilities**
 - 🧩 Update automatically via Git hooks
 - 🆕 Filter to show **only unread** articles
+- 🆕 Filter to show **only favorites** articles

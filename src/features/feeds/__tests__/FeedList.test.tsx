@@ -1,38 +1,74 @@
 import { render, screen, fireEvent } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 import FeedList from '~/features/feeds/FeedList';
+import { mockFeeds } from '../../../../__mocks__';
 
 jest.mock('~/hooks/usePersistedFeeds', () => ({
   __esModule: true,
   default: () => ({
-    feeds: [
-      { name: 'Feed One', url: 'https://example.com/rss' },
-      { name: 'Feed Two', url: 'https://example.org/rss' },
-    ],
+    feeds: mockFeeds,
     removeFeed: jest.fn(),
     updateFeed: jest.fn(),
   }),
 }));
 
 describe('FeedList', () => {
+  it('renders all feeds correctly', () => {
+    render(
+      <MemoryRouter>
+        <FeedList
+          feeds={mockFeeds}
+          selectedFeed={mockFeeds[0].url}
+          onSelectFeed={jest.fn()}
+          removeFeed={jest.fn()}
+          updateFeed={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
+
+    mockFeeds.forEach((feed) => {
+      expect(screen.getByText(feed.name)).toBeInTheDocument();
+    });
+  });
+
   it('shows edit form when clicking edit and cancels edit', () => {
-    render(<FeedList selectedFeed="https://example.com/rss" onSelectFeed={jest.fn()} />);
+    render(
+      <MemoryRouter>
+        <FeedList
+          feeds={mockFeeds}
+          selectedFeed={mockFeeds[0].url}
+          onSelectFeed={jest.fn()}
+          removeFeed={jest.fn()}
+          updateFeed={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
 
     const editBtn = screen.getAllByLabelText(/edit feed/i)[0];
     fireEvent.click(editBtn);
 
-    expect(screen.getByDisplayValue('Feed One')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('Example Feed 1')).toBeInTheDocument();
 
     const cancelBtn = screen.getByLabelText(/cancel edit/i);
     fireEvent.click(cancelBtn);
 
-    expect(screen.queryByDisplayValue('Feed One')).not.toBeInTheDocument();
+    expect(screen.queryByDisplayValue('Example Feed 1')).not.toBeInTheDocument();
   });
 
   it('asks for confirmation on delete', () => {
     window.confirm = jest.fn(() => true);
 
-    render(<FeedList selectedFeed="https://example.com/rss" onSelectFeed={jest.fn()} />);
-
+    render(
+      <MemoryRouter>
+        <FeedList
+          feeds={mockFeeds}
+          selectedFeed={mockFeeds[0].url}
+          onSelectFeed={jest.fn()}
+          removeFeed={jest.fn()}
+          updateFeed={jest.fn()}
+        />
+      </MemoryRouter>,
+    );
     const deleteBtn = screen.getAllByLabelText(/delete feed/i)[0];
     fireEvent.click(deleteBtn);
 

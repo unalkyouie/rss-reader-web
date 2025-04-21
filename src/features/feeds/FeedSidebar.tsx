@@ -11,7 +11,7 @@ interface Props {
 }
 
 const FeedSidebar = ({ selectedFeed, onSelectFeed, showUnreadOnly, onToggleUnread }: Props) => {
-  const { addFeed } = usePersistedFeeds();
+  const { feeds, removeFeed, updateFeed, addFeed } = usePersistedFeeds();
   const [showForm, setShowForm] = useState(false);
 
   const handleAddFeed = (feed: { name: string; url: string }) => {
@@ -38,7 +38,13 @@ const FeedSidebar = ({ selectedFeed, onSelectFeed, showUnreadOnly, onToggleUnrea
         {showUnreadOnly ? 'Show all' : 'Show unread'}
       </button>
 
-      <FeedList onSelectFeed={onSelectFeed} selectedFeed={selectedFeed} />
+      <FeedList
+        onSelectFeed={onSelectFeed}
+        selectedFeed={selectedFeed}
+        removeFeed={removeFeed}
+        updateFeed={updateFeed}
+        feeds={feeds}
+      />
 
       <button
         onClick={() => setShowForm((prev) => !prev)}
