@@ -1,32 +1,32 @@
 import { useCallback, useEffect, useState } from 'react';
+import { Article } from '~/types/global';
 
 const STORAGE_KEY = 'favoriteArticles';
 
-const getStoredFavorites = (): Set<string> => {
+const getStoredFavorites = (): Article[] => {
   const stored = localStorage.getItem(STORAGE_KEY);
-  return new Set(stored ? JSON.parse(stored) : []);
+  return stored ? JSON.parse(stored) : [];
 };
 
 const useFavorites = () => {
-  const [favorites, setFavorites] = useState<Set<string>>(getStoredFavorites());
+  const [favorites, setFavorites] = useState<Article[]>(getStoredFavorites());
 
   useEffect(() => {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(Array.from(favorites)));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(favorites));
   }, [favorites]);
 
-  const toggleFavorite = useCallback((id: string) => {
+  const toggleFavorite = useCallback((article: Article) => {
     setFavorites((prev) => {
-      const next = new Set(prev);
-      if (next.has(id)) {
-        next.delete(id);
+      const exists = prev.find((a) => a.id === article.id);
+      if (exists) {
+        return prev.filter((a) => a.id !== article.id);
       } else {
-        next.add(id);
+        return [...prev, article];
       }
-      return next;
     });
   }, []);
 
-  const isFavorite = useCallback((id: string) => favorites.has(id), [favorites]);
+  const isFavorite = useCallback((id: string) => favorites.some((a) => a.id === id), [favorites]);
 
   return { favorites, toggleFavorite, isFavorite };
 };

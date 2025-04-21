@@ -9,7 +9,7 @@ export interface Article {
   title: string;
   link: string | null;
   pubDate: Date | null;
-  feedTitle: string;
+  feedTitle?: string;
   description: string | null;
   content: string | null;
 }

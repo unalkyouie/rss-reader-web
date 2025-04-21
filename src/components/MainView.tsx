@@ -3,6 +3,7 @@ import ArticlesGrid from '~/features/articles/ArticlesGrid';
 import useFeedArticles from '~/hooks/useFeedArticles';
 import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 import FeedSidebar from '~/features/feeds/FeedSidebar';
+import useFavorites from '~/hooks/useFavorites';
 
 const MainView = () => {
   const [selectedFeed, setSelectedFeed] = useState(
@@ -12,25 +13,34 @@ const MainView = () => {
   const { feeds } = usePersistedFeeds();
 
   const [showUnreadOnly, setShowUnreadOnly] = useState(false);
-
-  const toggleShowUnread = () => {
-    setShowUnreadOnly((prev) => !prev);
-  };
+  const { favorites } = useFavorites();
 
   const readArticles = useMemo(() => {
     return new Set(JSON.parse(localStorage.getItem('readArticles') || '[]'));
   }, [articles]);
 
-  const filteredArticles = showUnreadOnly
-    ? articles.filter((a) => !readArticles.has(a.id))
-    : articles;
+  const filteredArticles = useMemo(() => {
+    if (selectedFeed === '__favorites__') {
+      return showUnreadOnly ? favorites.filter((a) => !readArticles.has(a.id)) : favorites;
+    }
+    if (showUnreadOnly) return articles.filter((a) => !readArticles.has(a.id));
+    return articles;
+  }, [selectedFeed, articles, favorites, showUnreadOnly, readArticles]);
+
+  const toggleShowUnread = () => {
+    setShowUnreadOnly((prev) => !prev);
+  };
+
   const handleSelectFeed = (url: string) => {
     setSelectedFeed(url);
     localStorage.setItem('selectedFeedUrl', url);
   };
 
   useEffect(() => {
-    if ((!selectedFeed || !feeds.find((f) => f.url === selectedFeed)) && feeds.length > 0) {
+    const isFavorites = selectedFeed === '__favorites__';
+    const isValidFeed = feeds.some((f) => f.url === selectedFeed);
+
+    if (!isFavorites && (!selectedFeed || !isValidFeed) && feeds.length > 0) {
       const defaultFeed = feeds[0].url;
       setSelectedFeed(defaultFeed);
       localStorage.setItem('selectedFeedUrl', defaultFeed);

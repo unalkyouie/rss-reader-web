@@ -4,7 +4,6 @@ import { Article } from '~/types/global';
 import { FaHeart, FaRegHeart } from 'react-icons/fa';
 import useFavoriteArticles from '~/hooks/useFavorites';
 
-
 interface Props {
   articles: Array<Article>;
 }
@@ -34,25 +33,24 @@ const ArticlesGrid = ({ articles }: Props) => {
             className={`article-item ${isRead ? 'read' : ''}`}
             data-testid={`article-item-${article.id}`}
           >
-
             {article.title && <h2>{article.title}</h2>}
             {article.description && <p>{article.description}</p>}
             <button onClick={() => handleSelectFeed(article.id)}>Read more</button>
             <button
-  aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
-  onClick={(e) => {
-    e.stopPropagation();
-    toggleFavorite(article.id);
-  }}
-  style={{
-    background: 'none',
-    border: 'none',
-    cursor: 'pointer',
-    padding: 0,
-  }}
->
-  {favorite ? <FaHeart color="red" /> : <FaRegHeart />}
-</button>
+              aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+              onClick={(e) => {
+                e.stopPropagation();
+                toggleFavorite(article);
+              }}
+              style={{
+                background: 'none',
+                border: 'none',
+                cursor: 'pointer',
+                padding: 0,
+              }}
+            >
+              {favorite ? <FaHeart color="red" /> : <FaRegHeart />}
+            </button>
           </div>
         );
       })}
