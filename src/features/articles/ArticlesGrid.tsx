@@ -1,12 +1,16 @@
 import React, { useCallback, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Article } from '~/types/global';
+import { FaHeart, FaRegHeart } from 'react-icons/fa';
+import useFavoriteArticles from '~/hooks/useFavorites';
+
 
 interface Props {
   articles: Array<Article>;
 }
 
 const ArticlesGrid = ({ articles }: Props) => {
+  const { isFavorite, toggleFavorite } = useFavoriteArticles();
   const navigate = useNavigate();
   const readArticles = useRef(
     new Set<string>(JSON.parse(localStorage.getItem('readArticles') || '[]')),
@@ -21,16 +25,34 @@ const ArticlesGrid = ({ articles }: Props) => {
   return (
     <div className="articles-grid" data-testid="articles-grid">
       {articles.map((article, index) => {
-        const isRead = readArticles.current.has(article.id ?? '');
+        const id = article.id || String(index);
+        const isRead = readArticles.current.has(id);
+        const favorite = isFavorite(id);
         return (
           <div
             key={article.id || index}
             className={`article-item ${isRead ? 'read' : ''}`}
             data-testid={`article-item-${article.id}`}
           >
+
             {article.title && <h2>{article.title}</h2>}
             {article.description && <p>{article.description}</p>}
             <button onClick={() => handleSelectFeed(article.id)}>Read more</button>
+            <button
+  aria-label={favorite ? 'Remove from favorites' : 'Add to favorites'}
+  onClick={(e) => {
+    e.stopPropagation();
+    toggleFavorite(article.id);
+  }}
+  style={{
+    background: 'none',
+    border: 'none',
+    cursor: 'pointer',
+    padding: 0,
+  }}
+>
+  {favorite ? <FaHeart color="red" /> : <FaRegHeart />}
+</button>
           </div>
         );
       })}

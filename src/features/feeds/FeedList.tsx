@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import usePersistedFeeds from '~/hooks/usePersistedFeeds';
 import FeedForm from './FeedForm';
+import { Feed } from '~/types/global';
+import { FaEdit, FaTrash, FaTimes } from 'react-icons/fa';
 
 interface Props {
   selectedFeed?: string;
   onSelectFeed: (url: string) => void;
+  feeds: Array<Feed>;
+  removeFeed: (url: string) => void;
+  updateFeed: (url: string, updates: Partial<Feed>) => void;
 }
 
-const FeedList = ({ selectedFeed, onSelectFeed }: Props) => {
-  const { feeds, removeFeed, updateFeed } = usePersistedFeeds();
+const FeedList = ({ selectedFeed, onSelectFeed, updateFeed, removeFeed, feeds }: Props) => {
   const [editingFeedUrl, setEditingFeedUrl] = useState<string | null>(null);
 
   const handleUpdate = (updates: { name: string; url: string }) => {
@@ -39,9 +42,10 @@ const FeedList = ({ selectedFeed, onSelectFeed }: Props) => {
           >
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
               <span>{feed.name}</span>
-              <div style={{ display: 'flex', gap: '5px' }}>
+              <div style={{ display: 'flex', gap: '6px' }}>
                 {isEditing ? (
                   <button
+                  className="icon-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingFeedUrl(null);
@@ -49,10 +53,11 @@ const FeedList = ({ selectedFeed, onSelectFeed }: Props) => {
                     aria-label="Cancel edit"
                     title="Cancel"
                   >
-                    ❌
+                    <FaTimes />
                   </button>
                 ) : (
                   <button
+                  className="icon-btn"
                     onClick={(e) => {
                       e.stopPropagation();
                       setEditingFeedUrl(feed.url);
@@ -60,15 +65,16 @@ const FeedList = ({ selectedFeed, onSelectFeed }: Props) => {
                     aria-label="Edit feed"
                     title="Edit"
                   >
-                    ✏️
+                    <FaEdit />
                   </button>
                 )}
                 <button
+                className="icon-btn"
                   onClick={(e) => handleDelete(e, feed.url)}
                   aria-label="Delete feed"
                   title="Delete"
                 >
-                  🗑
+                  <FaTrash />
                 </button>
               </div>
             </div>

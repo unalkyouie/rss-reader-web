@@ -262,3 +262,22 @@ button:disabled {
   transform: translateY(0);
   margin-top: 20px;
 }
+
+/* Icon button*/
+.icon-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  transition: color 0.2s ease, background 0.2s ease;
+  border-radius: 4px;
+}
+
+.icon-btn:hover {
+  color: #222;
+  background: rgba(0, 0, 0, 0.05);
+}
