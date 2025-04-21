@@ -23,15 +23,13 @@
 
 - `usePersistedFeeds`:
 
-  - Add/remove feeds with LocalStorage persistence
+  - Add/remove/edit feeds with LocalStorage persistence
   - Lightweight validation built in
   - ✅ Tests covering core functionality
 
 - `rss-parser` integration:
   - Using AllOrigins proxy to bypass **CORS** issues
   - Graceful handling of invalid/malformed feeds
-
----
 
 ### 📰 Article Display
 
@@ -45,6 +43,10 @@
   - Uses `formatDate()` for clean timestamp formatting
   - Fully responsive layout
   - 🆕 Visually marks **read** articles using localStorage-based state
+  - 🆕 ❤️ Favorite support per article
+
+- `MainView`:
+  - Feed selection, unread toggle, and favorite view integration
 
 ---
 
@@ -54,9 +56,10 @@
 
 - Responsive **grid layout** for articles
 - **Dark/light mode** theming toggle
-- Smooth **loading states** across views
+- Smooth **loading indicators** throughout views — articles, feeds, form actions
 - 🆕 Collapsible form for adding feeds with animation
 - 🆕 Glassmorphism & spacing tweaks for sidebar and layout
+- 🆕 Icon-only buttons with tooltips for feed actions
 
 ### 🧼 Code Quality
 
@@ -69,6 +72,7 @@
 - Debounced search input for smoother filtering
 - Caching feed fetches to avoid redundant requests
 - Virtualized article lists for large feeds
+- 🆕 Optimized effect dependencies and memoization
 
 ---
 
@@ -76,10 +80,11 @@
 
 **Test Coverage Goals**:
 
-- `usePersistedFeeds`: Add/remove logic, LocalStorage sync
+- `usePersistedFeeds`: Add/remove/edit logic, LocalStorage sync
 - `FeedForm`: Input handling, validation, edge cases
 - `ArticlesGrid`: Sorting, date formatting, fallback states
-- 🆕 `MainView`: Integration of feed management + articles + read tracking
+- `MainView`: Feed switching, read state, favorites toggle
+- 🆕 `useFavorites`: LocalStorage sync and toggling logic
 
 ---
 
@@ -99,6 +104,9 @@
 - 🆕 **Read Article Memory**  
   _"Articles you've already clicked? Marked and remembered locally. Chef's kiss."_
 
+- 🆕 **Favorites Feed**  
+  _"Unified view of all favorited articles. Feels slick."_
+
 ---
 
 ### 😤 Pain Points
@@ -107,7 +115,7 @@
 - CORS issues on raw RSS URLs
 - TypeScript types for parsed feed objects are messy
 - Making UI responsive across screen sizes is fiddly
-- 🆕 Finding clean way to track & style read articles across views
+- Clean handling of feed/article errors still a little noisy
 
 ---
 
@@ -132,12 +140,15 @@
 | 3   | 🤔   | Refactor decisions, testing                                         |
 | 4   | 😌   | Working feed + articles 🎉                                          |
 | 5   | 😤   | Routing + Articles kinda working, not sure if I can display content |
+| 6   | 🚀   | Deployment             |
 
 ---
 
 ## 🔜 Next Steps
 
-- ⏱ Add **feed refresh scheduling**
+- ⏱ Add **feed refresh scheduling** on interval
 - 🧩 Update automatically via Git hooks
-- 🆕 Filter to show **only unread** articles
-- 🆕 Filter to show **only favorites** articles
+- ❌ Show **Article not found** fallback more cleanly
+- ✨ Animate **loading states** with a spinner across app
+- 🔄 Persist feed switching more robustly
+- 📅 Build a **PWA installable version**
