@@ -5,11 +5,11 @@ import { saveToStorage, loadFromStorage } from '~/utils/storage';
 const FEEDS_KEY = 'savedFeeds';
 
 const usePersistedFeeds = () => {
-  const [feeds, setFeeds] = useState<Feed[]>(() => {
+  const [feeds, setFeeds] = useState<Array<Feed>>(() => {
     return loadFromStorage(FEEDS_KEY, []) || [];
   });
 
-  const persistFeeds = (updated: Feed[]) => {
+  const persistFeeds = (updated: Array<Feed>) => {
     setFeeds(updated);
     saveToStorage(FEEDS_KEY, updated);
   };
